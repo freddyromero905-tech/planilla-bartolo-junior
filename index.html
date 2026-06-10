@@ -1701,6 +1701,11 @@
         <section class="panel">
           <div class="panel-body">
             ${renderTitle("4. VENTA DETALLADA DEL DÍA", "Precio y subtotal se calculan automáticamente. Pedidos Ya se carga en su módulo separado.")}
+            <div class="kpi-grid" style="margin-bottom: 14px;">
+              ${renderKpi("P", "Productos planilla", gs(data.totalVentasPlanilla))}
+              ${renderKpi("L", "Productos libres", gs(data.totalProductosArmados))}
+              ${renderKpi("$", "Venta total Hoja 2", gs(data.totalVentasLocal))}
+            </div>
             <div class="table-wrap">
               <table>
                 <thead>

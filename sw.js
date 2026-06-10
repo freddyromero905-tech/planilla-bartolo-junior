@@ -1,4 +1,4 @@
-const CACHE_NAME = "planilla-bartolo-v4";
+const CACHE_NAME = "planilla-bartolo-v5";
 const ASSETS = [
   "./",
   "./index.html",
