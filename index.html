@@ -1,0 +1,3220 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#111111" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Planilla Bartolo" />
+  <title>Bartolo Junior - Planilla Digital Online</title>
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --panel: #ffffff;
+      --ink: #171717;
+      --muted: #616161;
+      --line: #d9dde3;
+      --dark: #111111;
+      --accent: #b91c1c;
+      --accent-soft: #fee2e2;
+      --ok: #166534;
+      --ok-soft: #dcfce7;
+      --warn: #92400e;
+      --warn-soft: #fef3c7;
+      --blue: #1d4ed8;
+      --blue-soft: #dbeafe;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .topbar {
+      background: var(--dark);
+      color: #fff;
+      border-radius: 8px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.15;
+    }
+
+    .topbar p {
+      margin: 6px 0 0;
+      color: #d4d4d4;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .badge {
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-top: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .panel-body {
+      padding: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .wide-field,
+    .span-2 {
+      grid-column: span 2;
+    }
+
+    label {
+      display: block;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    label span {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid #cdd3db;
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      padding: 8px 10px;
+    }
+
+    input:focus,
+    select:focus,
+    button:focus {
+      outline: 2px solid rgba(29, 78, 216, 0.32);
+      outline-offset: 2px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .tab {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px;
+    }
+
+    .tab.active {
+      background: var(--dark);
+      color: #fff;
+      border-color: var(--dark);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .section-title p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      min-width: 820px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 9px 10px;
+      border-bottom: 1px solid #eceff3;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #e8ecf1;
+      color: #222;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    tfoot td {
+      background: #f7f8fa;
+      font-weight: 800;
+    }
+
+    td input,
+    td select {
+      min-width: 96px;
+    }
+
+    .narrow {
+      width: 110px;
+    }
+
+    .row-actions {
+      width: 64px;
+      text-align: center;
+    }
+
+    .btn {
+      border: 1px solid var(--dark);
+      border-radius: 8px;
+      min-height: 38px;
+      padding: 8px 12px;
+      background: var(--dark);
+      color: #fff;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .btn.danger {
+      background: #fff;
+      color: var(--accent);
+      border-color: #fecaca;
+      width: 36px;
+      min-height: 34px;
+      padding: 0;
+    }
+
+    .notice {
+      border-radius: 8px;
+      padding: 12px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .notice.red {
+      background: var(--accent-soft);
+      color: #7f1d1d;
+    }
+
+    .notice.amber {
+      background: var(--warn-soft);
+      color: var(--warn);
+    }
+
+    .notice.green {
+      background: var(--ok-soft);
+      color: var(--ok);
+    }
+
+    .inline-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .summary-box {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 16px;
+    }
+
+    .summary-box h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid #eceff3;
+    }
+
+    .summary-row b {
+      white-space: nowrap;
+    }
+
+    .final-total {
+      margin-top: 14px;
+      border-radius: 8px;
+      background: var(--dark);
+      color: #fff;
+      padding: 16px;
+    }
+
+    .final-total p {
+      margin: 0;
+      color: #d4d4d4;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .final-total strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 34px;
+      line-height: 1.1;
+    }
+
+    .final-total.alert {
+      background: var(--accent);
+    }
+
+    .final-total.ok {
+      background: var(--ok);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .kpi {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 14px;
+    }
+
+    .kpi .icon {
+      color: var(--muted);
+      font-size: 22px;
+    }
+
+    .kpi p {
+      margin: 8px 0 4px;
+      color: var(--muted);
+    }
+
+    .kpi strong {
+      display: block;
+      font-size: 18px;
+      word-break: break-word;
+    }
+
+    .local-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .local-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 12px;
+    }
+
+    .local-card p {
+      margin: 0 0 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    @media (max-width: 920px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .badges {
+        justify-content: flex-start;
+      }
+
+      .form-grid,
+      .inline-grid,
+      .two-col,
+      .kpi-grid,
+      .local-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .wide-field,
+      .span-2 {
+        grid-column: auto;
+      }
+
+      .tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .app {
+        padding: 10px;
+      }
+
+      .tabs {
+        grid-template-columns: 1fr;
+      }
+
+      .tab {
+        justify-content: flex-start;
+      }
+
+      .topbar h1 {
+        font-size: 22px;
+      }
+
+      .final-total strong {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="app"></div>
+
+  <script>
+    const locales = ["Maramburé", "Ñu Guazú", "Ciclovía", "Costanera"];
+    const origenes = ["Producción Central", ...locales];
+
+    const stockCarnesPanes = [
+      "LOMITO (Bolsita 80g)",
+      "HAMBURGUESA (Medallón 80g)",
+      "ÁRABE CARNE (Bolsita 150g)",
+      "ÁRABE POLLO (Bolsita 150g)",
+      "ÁRABE MIXTO (75g/75g)",
+      "PAN FULL",
+      "PAN ÁRABE",
+      "PAN HAMBURGUESA",
+      "PAN SUPER PANCHO",
+      "PAN GOURMET",
+      "PAN SANDWICH LOMITO",
+      "FILE DE POLLO",
+      "PAN PARA CHIVITO"
+    ];
+
+    const stockExtras = [
+      "SUPER PANCHO",
+      "PANCETA (Fetas)",
+      "HUEVO (Unidades)",
+      "PAPAS FRITAS CHICA",
+      "PAPAS FRITAS GRANDE",
+      "PARRILLITA"
+    ];
+
+    const stockQuesos = [
+      "QUESO SÁNDWICH (Fetas)",
+      "QUESO ÁRABE (Fetas)",
+      "QUESO TIPO TRIANGULO",
+      "CHEDDAR (Fetas)"
+    ];
+
+    const stockJamones = [
+      "JAMÓN (Fetas)",
+      "JAMÓN TIPO TRIANGULO"
+    ];
+
+    const stockBebidas = [
+      "GASEOSA 250 ML BOT.",
+      "GASEOSA 350 ML BOT.",
+      "GASEOSA LATA",
+      "GASEOSA 500 ML BOT.",
+      "GASEOSA 1L",
+      "GASEOSA 1,5L",
+      "GASEOSA 2L",
+      "AGUA 500",
+      "FRUGOS 200ml",
+      "FRUGOS 1L",
+      "AQUARIUS 500ml",
+      "AGUA TONICA",
+      "BOTELLA SKOL",
+      "BOTELLA HEINEKEN",
+      "BOTELLA CORONITA",
+      "BOTELLA PILSEN",
+      "BOTELLA BRAHMA",
+      "HEINEKEN LATA",
+      "SKOL LATA",
+      "PILSEN LATA",
+      "BRAHMA LATA",
+      "BOTELLA BUD 710",
+      "BOTELLA MILLER 710",
+      "BOTELLA CORONA 710",
+      "BOTELLA HEINEKEN 650",
+      "MUNICH ULTRA LATA",
+      "MILLER LATA",
+      "BUB66 LATA",
+      "OURO LATA",
+      "SMIRNOF LATA"
+    ];
+
+    const productos = [
+      ["SÁNDWICHES", "Sandwich Tradicional", 26000],
+      ["SÁNDWICHES", "Sandwich Doble Carne", 42000],
+      ["SÁNDWICHES", "Sandwich Mixto", 35000],
+      ["SÁNDWICHES", "Sandwich Full", 35000],
+      ["ÁRABES", "Árabe Mixto", 25000],
+      ["ÁRABES", "Árabe Pollo", 25000],
+      ["ÁRABES", "Árabe Mixto Completo", 28000],
+      ["ÁRABES", "Árabe Pollo Completo", 28000],
+      ["ÁRABES", "Árabe Carne Normal", 27000],
+      ["ÁRABES", "Árabe Carne Completo", 30000],
+      ["ÁRABES", "Arabetolo Mixto", 35000],
+      ["ÁRABES", "Arabetolo Pollo", 35000],
+      ["ÁRABES", "Arabetolo Carne", 37000],
+      ["ÁRABES", "Árabe Fit", 22000],
+      ["HAMBURGUESAS", "Hamburguesa Completa", 20000],
+      ["HAMBURGUESAS", "Hamburguesa Doble", 30000],
+      ["HAMBURGUESAS", "Hamburguesa Cheddar", 20000],
+      ["HAMBURGUESAS", "Hamburtolo", 30000],
+      ["PICADAS", "Papa Mediana", 15000],
+      ["PICADAS", "Papa Familiar", 20000],
+      ["PICADAS", "Papa Cheddar", 25000],
+      ["PICADAS", "Papa Katupiry", 25000],
+      ["ESPECIALES", "Quesadilla", 55000],
+      ["ESPECIALES", "Chivito", 50000],
+      ["ESPECIALES", "Chivitolo", 70000],
+      ["BEBIDA", "GASEOSA 250 ML BOT.", 5000],
+      ["BEBIDA", "GASEOSA 350 ML BOT.", 8000],
+      ["BEBIDA", "GASEOSA LATA", 10000],
+      ["BEBIDA", "GASEOSA 500 ML BOT.", 10000],
+      ["BEBIDA", "GASEOSA 1L", 13000],
+      ["BEBIDA", "GASEOSA 1,5L", 15000],
+      ["BEBIDA", "GASEOSA 2L", 20000],
+      ["BEBIDA", "AGUA 500", 5000],
+      ["BEBIDA", "FRUGOS 200ml", 6000],
+      ["BEBIDA", "FRUGOS 1L", 14000],
+      ["BEBIDA", "AQUARIUS 500ml", 10000],
+      ["BEBIDA", "AGUA TONICA", 8000],
+      ["BEBIDA", "BOTELLA SKOL", 10000],
+      ["BEBIDA", "BOTELLA HEINEKEN", 10000],
+      ["BEBIDA", "BOTELLA CORONITA", 10000],
+      ["BEBIDA", "BOTELLA PILSEN", 15000],
+      ["BEBIDA", "BOTELLA BRAHMA", 15000],
+      ["BEBIDA", "HEINEKEN LATA", 8000],
+      ["BEBIDA", "SKOL LATA", 8000],
+      ["BEBIDA", "PILSEN LATA", 7000],
+      ["BEBIDA", "BRAHMA LATA", 10000],
+      ["BEBIDA", "BOTELLA BUD 710", 20000],
+      ["BEBIDA", "BOTELLA MILLER 710", 20000],
+      ["BEBIDA", "BOTELLA CORONA 710", 20000],
+      ["BEBIDA", "BOTELLA HEINEKEN 650", 20000],
+      ["BEBIDA", "MUNICH ULTRA LATA", 7000],
+      ["BEBIDA", "MILLER LATA", 8000],
+      ["BEBIDA", "BUB66 LATA", 8000],
+      ["BEBIDA", "OURO LATA", 7000],
+      ["BEBIDA", "SMIRNOF LATA", 10000],
+      ["PIZZAS", "Pizza Pollo c/ katupiri", 55000],
+      ["PIZZAS", "Pizza Napolitana", 45000],
+      ["PIZZAS", "Lomipizza (4 porciones)", 100000],
+      ["PIZZAS", "Lomipizza (8 porciones)", 150000],
+      ["PIZZAS", "Pizza mozzarella", 35000],
+      ["PIZZAS", "Pizza jamon", 40000],
+      ["PIZZAS", "Pizza ajo al oleo", 40000],
+      ["PIZZAS", "Pizza palmito", 40000],
+      ["PIZZAS", "Pizza margarita", 40000],
+      ["PIZZAS", "Pizza pancetta y Cebolla", 45000],
+      ["PIZZAS", "Pizza katupiri", 45000],
+      ["PIZZAS", "Pizza choclo c/ katupiri", 45000],
+      ["PIZZAS", "Pizza pepperoni", 50000],
+      ["PIZZAS", "Pizza vegetariana", 50000],
+      ["PIZZAS", "Pizza fugazza", 50000],
+      ["PIZZAS", "Pizza 4 queso", 55000],
+      ["PIZZAS", "Pizza pollo bbq", 55000],
+      ["PIZZAS", "Pizza americana", 55000],
+      ["PIZZAS", "Pizza Mexicana", 55000]
+    ].map(([categoria, nombre, precio], index) => ({
+      id: String(index + 1),
+      categoria,
+      nombre,
+      precio,
+      precioPY: precio
+    }));
+
+    const tabs = [
+      ["hoja1", "▦", "Hoja 1"],
+      ["hoja2", "▤", "Hoja 2"],
+      ["py", "◉", "Pedidos Ya"],
+      ["hoja3", "$", "Hoja 3"],
+      ["hoja4", "!", "Hoja 4"],
+      ["cierre", "OK", "Cierre"],
+      ["admin", "▥", "Admin"]
+    ];
+
+    const storageKey = "bartolo_junior_planilla_online_v1_1";
+    const root = document.getElementById("app");
+    let activeTab = "hoja1";
+
+    const defaultSeguridad = () => ({
+      adminPin: "4000",
+      sucursales: Object.fromEntries(locales.map((local) => [
+        local,
+        { encargado: "", pin: "", activo: true }
+      ]))
+    });
+
+    const defaultAcceso = () => ({
+      tipo: "",
+      local: "",
+      nombre: ""
+    });
+
+    const gs = (value) => {
+      const number = Number(value || 0);
+      const formatted = new Intl.NumberFormat("es-PY", {
+        style: "currency",
+        currency: "PYG",
+        maximumFractionDigits: 0
+      }).format(Math.abs(number));
+      return number < 0 ? `-${formatted}` : formatted;
+    };
+
+    const diferenciaCajaLabel = (value) => {
+      const number = Number(value || 0);
+      if (number === 0) return "OK";
+      return `${number < 0 ? "FALTANTE" : "SOBRANTE"} ${gs(Math.abs(number))}`;
+    };
+
+    const makeRows = (items) =>
+      items.map((producto, index) => ({
+        producto,
+        inicial: index % 2 ? 40 : 60,
+        entrada: index % 3 === 0 ? 10 : 0,
+        saldo: index % 2 ? 25 : 38
+      }));
+
+    const makeProductosArmados = () =>
+      Array.from({ length: 5 }, () => ({
+        nombre: "",
+        precio: 0,
+        cantidad: 0
+      }));
+
+    const today = () => new Date().toISOString().slice(0, 10);
+
+    const defaultCierre = () => ({
+      fecha: today(),
+      encargado: "",
+      cajaChica: 0,
+      cajaFisicaReal: 0,
+      efectivoSobrante: 0,
+      verificadoPor: "",
+      horaCierre: "",
+      cerrado: false,
+      pdfGeneradoEn: ""
+    });
+
+    const defaultReporteSucursal = (local) => ({
+      local,
+      fecha: "",
+      guardadoEn: "",
+      encargado: "",
+      ventaTotal: 0,
+      ventaEfectivoPlanilla: 0,
+      totalEgresos: 0,
+      cajaChica: 0,
+      efectivoAEntregar: 0,
+      totalEfectivoCaja: 0,
+      qrAcreditado: 0,
+      pedidosYaBruto: 0,
+      pedidosYaNeto: 0,
+      pyComision: 0,
+      totalPorMedios: 0,
+      diferenciaMedios: 0,
+      gananciaBruta50: 0,
+      pagosPersonal: 0,
+      otrosEgresos: 0,
+      resultadoFinal: 0,
+      diferenciaCaja: 0,
+      inventarioFaltante: 0,
+      inventarioSobrante: 0,
+      inventarioDiferencia: 0,
+      estado: "Sin cierre"
+    });
+
+    const defaultState = () => ({
+      local: "Ñu Guazú",
+      fecha: today(),
+      encargado: "",
+      carnes: makeRows(stockCarnesPanes),
+      extras: makeRows(stockExtras),
+      quesos: makeRows(stockQuesos),
+      jamones: makeRows(stockJamones),
+      bebidas: makeRows(stockBebidas),
+      ventas: productos.map((producto) => ({ productoId: producto.id, cantidad: 0 })),
+      productosArmados: makeProductosArmados(),
+      pedidosYa: [
+        { nro: "PY-001", productoId: "15", cantidad: 1 },
+        { nro: "PY-002", productoId: "25", cantidad: 1 }
+      ],
+      efectivo: 415000,
+      qr: 443000,
+      totalPYManual: 0,
+      comisionPY: 0,
+      egresos: [
+        { concepto: "HIELO / GAS", nombre: "", monto: 0 },
+        { concepto: "GASTOS EXTRAORDINARIOS", nombre: "", monto: 0 },
+        { concepto: "PLANCHERO", nombre: "", monto: 150000 },
+        { concepto: "AYUDANTE PLANCHA", nombre: "", monto: 0 },
+        { concepto: "ATENCIÓN CLIENTE 1", nombre: "", monto: 0 },
+        { concepto: "ATENCIÓN CLIENTE 2", nombre: "", monto: 0 },
+        { concepto: "ENCARGADO", nombre: "", monto: 0 },
+        { concepto: "DELIVERY (Fijo)", nombre: "", monto: 80000 }
+      ],
+      firmaEncargado: "",
+      firmaVerificacion: "",
+      cierres: Object.fromEntries(locales.map((local) => [local, defaultCierre()])),
+      reportesSucursales: Object.fromEntries(locales.map((local) => [local, defaultReporteSucursal(local)])),
+      reportesPorFecha: {},
+      sucursalDias: {},
+      seguridad: defaultSeguridad(),
+      acceso: defaultAcceso()
+    });
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey));
+        return normalizeState(saved ? { ...defaultState(), ...saved } : defaultState());
+      } catch {
+        return normalizeState(defaultState());
+      }
+    }
+
+    function normalizeState(next) {
+      const defaults = defaultState();
+      const savedExtras = next.extras;
+      next.carnes = syncStockRows(next.carnes, stockCarnesPanes);
+      next.extras = syncStockRows(next.extras, stockExtras);
+      next.quesos = syncStockRows(next.quesos, stockQuesos, savedExtras);
+      next.jamones = syncStockRows(next.jamones, stockJamones, savedExtras);
+      next.bebidas = syncStockRows(next.bebidas, stockBebidas);
+      next.ventas = syncVentas(next.ventas);
+      next.productosArmados = syncProductosArmados(next.productosArmados);
+      next.cierres = { ...defaults.cierres, ...(next.cierres || {}) };
+      locales.forEach((local) => {
+        next.cierres[local] = { ...defaultCierre(), ...(next.cierres[local] || {}) };
+      });
+      next.reportesSucursales = { ...defaults.reportesSucursales, ...(next.reportesSucursales || {}) };
+      locales.forEach((local) => {
+        next.reportesSucursales[local] = { ...defaultReporteSucursal(local), ...(next.reportesSucursales[local] || {}) };
+      });
+      next.reportesPorFecha = { ...(next.reportesPorFecha || {}) };
+      locales.forEach((local) => {
+        const legacy = next.reportesSucursales[local];
+        if (legacy?.fecha) {
+          next.reportesPorFecha[reportKey(local, legacy.fecha)] = {
+            ...defaultReporteSucursal(local),
+            ...legacy
+          };
+        }
+      });
+      next.sucursalDias = next.sucursalDias || {};
+      const currentDayKey = dayKey(next.local, next.fecha);
+      if (!next.sucursalDias[currentDayKey]) {
+        next.sucursalDias[currentDayKey] = buildDailyDataFrom(next);
+      } else {
+        applyDailyDataTo(next, next.sucursalDias[currentDayKey]);
+      }
+      next.totalPYManual = Number(next.totalPYManual || 0);
+      next.comisionPY = 0;
+      next.seguridad = {
+        ...defaultSeguridad(),
+        ...(next.seguridad || {}),
+        sucursales: {
+          ...defaultSeguridad().sucursales,
+          ...((next.seguridad || {}).sucursales || {})
+        }
+      };
+      locales.forEach((local) => {
+        next.seguridad.sucursales[local] = {
+          encargado: "",
+          pin: "",
+          activo: true,
+          ...(next.seguridad.sucursales[local] || {})
+        };
+      });
+      next.acceso = { ...defaultAcceso(), ...(next.acceso || {}) };
+      if (next.acceso.tipo === "encargado") {
+        next.local = next.acceso.local || next.local;
+        const accessDayKey = dayKey(next.local, next.fecha);
+        if (!next.sucursalDias[accessDayKey]) {
+          next.sucursalDias[accessDayKey] = zeroDailyData(next.fecha);
+        }
+        applyDailyDataTo(next, next.sucursalDias[accessDayKey]);
+      }
+      return next;
+    }
+
+    function syncStockRows(savedRows, officialItems, fallbackRows = []) {
+      const allRows = [
+        ...(Array.isArray(savedRows) ? savedRows : []),
+        ...(Array.isArray(fallbackRows) ? fallbackRows : [])
+      ];
+      const byProduct = new Map(allRows.map((row) => [row.producto, row]));
+      return officialItems.map((producto) => ({
+        inicial: 0,
+        entrada: 0,
+        saldo: 0,
+        ...(byProduct.get(producto) || {}),
+        producto
+      }));
+    }
+
+    function syncVentas(savedVentas) {
+      const rows = Array.isArray(savedVentas) ? savedVentas : [];
+      return productos.map((producto, index) => ({
+        productoId: producto.id,
+        cantidad: Number(rows[index]?.cantidad || 0)
+      }));
+    }
+
+    function syncProductosArmados(savedRows) {
+      const rows = Array.isArray(savedRows) ? savedRows : [];
+      return makeProductosArmados().map((row, index) => ({
+        ...row,
+        ...(rows[index] || {}),
+        precio: Number(rows[index]?.precio || 0),
+        cantidad: Number(rows[index]?.cantidad || 0)
+      }));
+    }
+
+    function dayKey(local, fecha) {
+      return `${local || ""}__${fecha || today()}`;
+    }
+
+    function reportKey(local, fecha) {
+      return dayKey(local, fecha);
+    }
+
+    function zeroRows(items) {
+      return items.map((producto) => ({
+        producto,
+        inicial: 0,
+        entrada: 0,
+        saldo: 0
+      }));
+    }
+
+    function zeroEgresos() {
+      return [
+        { concepto: "HIELO / GAS", nombre: "", monto: 0 },
+        { concepto: "GASTOS EXTRAORDINARIOS", nombre: "", monto: 0 },
+        { concepto: "PLANCHERO", nombre: "", monto: 0 },
+        { concepto: "AYUDANTE PLANCHA", nombre: "", monto: 0 },
+        { concepto: "ATENCIÓN CLIENTE 1", nombre: "", monto: 0 },
+        { concepto: "ATENCIÓN CLIENTE 2", nombre: "", monto: 0 },
+        { concepto: "ENCARGADO", nombre: "", monto: 0 },
+        { concepto: "DELIVERY (Fijo)", nombre: "", monto: 0 }
+      ];
+    }
+
+    function zeroDailyData(fecha) {
+      return {
+        encargado: "",
+        carnes: zeroRows(stockCarnesPanes),
+        extras: zeroRows(stockExtras),
+        quesos: zeroRows(stockQuesos),
+        jamones: zeroRows(stockJamones),
+        bebidas: zeroRows(stockBebidas),
+        ventas: productos.map((producto) => ({ productoId: producto.id, cantidad: 0 })),
+        productosArmados: makeProductosArmados(),
+        pedidosYa: [],
+        efectivo: 0,
+        qr: 0,
+        totalPYManual: 0,
+        comisionPY: 0,
+        egresos: zeroEgresos(),
+        firmaEncargado: "",
+        firmaVerificacion: "",
+        cierre: { ...defaultCierre(), fecha }
+      };
+    }
+
+    function buildDailyDataFrom(source) {
+      const local = source.local;
+      return {
+        encargado: source.encargado || "",
+        carnes: syncStockRows(source.carnes, stockCarnesPanes),
+        extras: syncStockRows(source.extras, stockExtras),
+        quesos: syncStockRows(source.quesos, stockQuesos),
+        jamones: syncStockRows(source.jamones, stockJamones),
+        bebidas: syncStockRows(source.bebidas, stockBebidas),
+        ventas: syncVentas(source.ventas),
+        productosArmados: syncProductosArmados(source.productosArmados),
+        pedidosYa: Array.isArray(source.pedidosYa) ? source.pedidosYa : [],
+        efectivo: Number(source.efectivo || 0),
+        qr: Number(source.qr || 0),
+        totalPYManual: Number(source.totalPYManual || 0),
+        comisionPY: 0,
+        egresos: Array.isArray(source.egresos) ? source.egresos : zeroEgresos(),
+        firmaEncargado: source.firmaEncargado || "",
+        firmaVerificacion: source.firmaVerificacion || "",
+        cierre: { ...defaultCierre(), fecha: source.fecha, ...(source.cierres?.[local] || {}) }
+      };
+    }
+
+    function applyDailyDataTo(target, dayData) {
+      const daily = dayData || zeroDailyData(target.fecha);
+      target.encargado = daily.encargado || "";
+      target.carnes = syncStockRows(daily.carnes, stockCarnesPanes);
+      target.extras = syncStockRows(daily.extras, stockExtras);
+      target.quesos = syncStockRows(daily.quesos, stockQuesos);
+      target.jamones = syncStockRows(daily.jamones, stockJamones);
+      target.bebidas = syncStockRows(daily.bebidas, stockBebidas);
+      target.ventas = syncVentas(daily.ventas);
+      target.productosArmados = syncProductosArmados(daily.productosArmados);
+      target.pedidosYa = Array.isArray(daily.pedidosYa) ? daily.pedidosYa : [];
+      target.efectivo = Number(daily.efectivo || 0);
+      target.qr = Number(daily.qr || 0);
+      target.totalPYManual = Number(daily.totalPYManual || 0);
+      target.comisionPY = 0;
+      target.egresos = Array.isArray(daily.egresos) ? daily.egresos : zeroEgresos();
+      target.firmaEncargado = daily.firmaEncargado || "";
+      target.firmaVerificacion = daily.firmaVerificacion || "";
+      target.cierres[target.local] = { ...defaultCierre(), fecha: target.fecha, ...(daily.cierre || {}) };
+    }
+
+    function persistCurrentDay() {
+      if (!state?.sucursalDias) return;
+      state.sucursalDias[dayKey(state.local, state.fecha)] = buildDailyDataFrom(state);
+    }
+
+    function loadCurrentDay() {
+      const key = dayKey(state.local, state.fecha);
+      if (!state.sucursalDias[key]) {
+        state.sucursalDias[key] = zeroDailyData(state.fecha);
+      }
+      applyDailyDataTo(state, state.sucursalDias[key]);
+    }
+
+    function changeDayContext(field, value) {
+      persistCurrentDay();
+      state[field] = value;
+      loadCurrentDay();
+      saveState();
+      render();
+    }
+
+    function saveState() {
+      persistCurrentDay();
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    }
+
+    function toNumber(value) {
+      const next = Number(value);
+      return Number.isFinite(next) ? next : 0;
+    }
+
+    function productById(id) {
+      return productos.find((producto) => producto.id === id) || productos[0];
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function resumen() {
+      const totalVentasPlanilla = state.ventas.reduce((acc, venta) => {
+        const producto = productById(venta.productoId);
+        return acc + producto.precio * Number(venta.cantidad || 0);
+      }, 0);
+
+      const totalProductosArmados = state.productosArmados.reduce((acc, row) => {
+        return acc + Number(row.precio || 0) * Number(row.cantidad || 0);
+      }, 0);
+
+      const totalVentasLocal = totalVentasPlanilla + totalProductosArmados;
+
+      const pyLista = state.pedidosYa.reduce((acc, pedido) => {
+        const producto = productById(pedido.productoId);
+        return acc + producto.precio * Number(pedido.cantidad || 0);
+      }, 0);
+
+      const pyManual = Number(state.totalPYManual || 0);
+      const pyBruto = pyManual > 0 ? pyManual : pyLista;
+      const pyComision = 0;
+      const pyNeto = pyBruto;
+      const totalEgresos = state.egresos.reduce((acc, egreso) => acc + Number(egreso.monto || 0), 0);
+      const cajaChica = Number(state.cierres?.[state.local]?.cajaChica || 0);
+      const efectivoFisico = Number(state.efectivo || 0);
+      const qrAcreditado = Number(state.qr || 0);
+      const totalVentaDia = totalVentasLocal;
+      const ventaEfectivoPlanilla = totalVentaDia - pyBruto - qrAcreditado;
+      const totalCobradoRegistrado = efectivoFisico + qrAcreditado;
+      const efectivoAEntregar = ventaEfectivoPlanilla - totalEgresos + cajaChica;
+      const totalPorMedios = efectivoFisico - cajaChica + totalEgresos + qrAcreditado + pyBruto;
+      const totalRendidoHoja4 = totalPorMedios;
+      const diferenciaEfectivoHoja4 = efectivoFisico - efectivoAEntregar;
+      const diferenciaTotalMedios = totalPorMedios - totalVentaDia;
+
+      return {
+        totalVentasLocal,
+        totalVentasPlanilla,
+        totalProductosArmados,
+        totalVentaDia,
+        ventaEfectivoPlanilla,
+        pyLista,
+        pyManual,
+        pyBruto,
+        pyComision,
+        pyNeto,
+        totalEgresos,
+        cajaChica,
+        efectivoFisico,
+        qrAcreditado,
+        totalCobradoRegistrado,
+        totalPorMedios,
+        totalRendidoHoja4,
+        diferenciaEfectivoHoja4,
+        diferenciaTotalMedios,
+        efectivoAEntregar
+      };
+    }
+
+    function productOptions(selectedId) {
+      return productos
+        .map((producto) => {
+          const selected = producto.id === selectedId ? "selected" : "";
+          return `<option value="${producto.id}" ${selected}>${escapeHtml(producto.nombre)}</option>`;
+        })
+        .join("");
+    }
+
+    function localOptions(selectedLocal) {
+      return locales
+        .map((local) => {
+          const selected = local === selectedLocal ? "selected" : "";
+          return `<option value="${escapeHtml(local)}" ${selected}>${escapeHtml(local)}</option>`;
+        })
+        .join("");
+    }
+
+    function isAdminAccess() {
+      return state.acceso?.tipo === "admin";
+    }
+
+    function isEncargadoAccess() {
+      return state.acceso?.tipo === "encargado";
+    }
+
+    function hasAccess() {
+      return isAdminAccess() || isEncargadoAccess();
+    }
+
+    function visibleTabs() {
+      return isAdminAccess() ? tabs : tabs.filter(([id]) => id !== "admin");
+    }
+
+    function randomPin() {
+      let pin = "";
+      do {
+        pin = String(Math.floor(1000 + Math.random() * 9000));
+      } while (
+        pin === String(state.seguridad?.adminPin || "").trim() ||
+        locales.some((local) => state.seguridad?.sucursales?.[local]?.pin === pin)
+      );
+      return pin;
+    }
+
+    function findSucursalByPin(pin) {
+      const cleanPin = String(pin || "").trim();
+      if (!cleanPin) return null;
+      return locales.find((local) => {
+        const config = state.seguridad?.sucursales?.[local];
+        return config?.activo && String(config.pin || "").trim() === cleanPin;
+      }) || null;
+    }
+
+    function render() {
+      if (!hasAccess()) {
+        renderAcceso();
+        return;
+      }
+      if (isEncargadoAccess()) {
+        state.local = state.acceso.local || state.local;
+        if (activeTab === "admin") activeTab = "hoja1";
+      }
+      const tabsToShow = visibleTabs();
+      if (!tabsToShow.some(([id]) => id === activeTab)) {
+        activeTab = tabsToShow[0]?.[0] || "hoja1";
+      }
+      root.innerHTML = `
+        <header class="topbar">
+          <div>
+            <h1>BARTOLO JUNIOR - PLANILLA DIGITAL ONLINE</h1>
+            <p>Versión 1.1 - Base oficial Programación 4L</p>
+          </div>
+          <div class="badges">
+            <span class="badge">${isAdminAccess() ? "Modo administrador" : `Encargado: ${escapeHtml(state.local)}`}</span>
+            <span class="badge">Pedidos Ya separado</span>
+            <button class="btn secondary" data-action="export-backup" type="button">Exportar respaldo</button>
+            <button class="btn secondary" data-action="import-backup" type="button">Importar respaldo</button>
+            <button class="btn danger" data-action="logout" type="button">Salir</button>
+            <input class="hidden" type="file" accept=".json,application/json" data-backup-input />
+          </div>
+        </header>
+
+        <section class="panel">
+          <div class="panel-body form-grid">
+            <label>
+              <span>Fecha</span>
+              <input type="date" data-field="fecha" value="${escapeHtml(state.fecha)}" />
+            </label>
+            <label>
+              <span>Sucursal</span>
+              ${isAdminAccess()
+                ? `<select data-field="local">${localOptions(state.local)}</select>`
+                : `<input value="${escapeHtml(state.local)}" readonly />`
+              }
+            </label>
+            <label class="wide-field">
+              <span>Encargado</span>
+              <input data-field="encargado" value="${escapeHtml(state.encargado)}" placeholder="Nombre del encargado" />
+            </label>
+          </div>
+        </section>
+
+        <nav class="tabs" aria-label="Secciones">
+          ${tabsToShow.map(([id, icon, label]) => `
+            <button class="tab ${id === activeTab ? "active" : ""}" data-tab="${id}" type="button">
+              <span>${icon}</span><span>${label}</span>
+            </button>
+          `).join("")}
+        </nav>
+
+        <main>
+          ${activeTab === "hoja1" ? renderHoja1() : ""}
+          ${activeTab === "hoja2" ? renderHoja2() : ""}
+          ${activeTab === "py" ? renderPedidosYa() : ""}
+          ${activeTab === "hoja3" ? renderHoja3() : ""}
+          ${activeTab === "hoja4" ? renderHoja4() : ""}
+          ${activeTab === "cierre" ? renderCierre() : ""}
+          ${activeTab === "admin" ? renderAdmin() : ""}
+        </main>
+      `;
+    }
+
+    function renderAcceso() {
+      root.innerHTML = `
+        <header class="topbar">
+          <div>
+            <h1>BARTOLO JUNIOR - ACCESO</h1>
+            <p>PIN temporal por sucursal. El encargado solo abre su sucursal asignada.</p>
+          </div>
+          <div class="badges">
+            <span class="badge">Acceso protegido</span>
+            <button class="btn secondary" data-action="import-backup" type="button">Importar respaldo</button>
+            <input class="hidden" type="file" accept=".json,application/json" data-backup-input />
+          </div>
+        </header>
+        <section class="panel">
+          <div class="panel-body">
+            ${renderTitle("Entrar al sistema", "Usar PIN de encargado para sucursal o PIN Admin para configuracion general.")}
+            <div class="two-col">
+              <div class="summary-box">
+                <h3>Encargado de sucursal</h3>
+                <label>
+                  <span>PIN encargado</span>
+                  <input type="password" data-login-pin placeholder="PIN de sucursal" autocomplete="off" />
+                </label>
+                <button class="btn" data-action="login-encargado" type="button" style="margin-top: 12px;">Entrar a mi sucursal</button>
+                <div class="notice amber" style="margin-top: 12px;">Este acceso queda bloqueado a la sucursal asignada. No permite cambiar sucursal ni entrar a Admin.</div>
+              </div>
+              <div class="summary-box">
+                <h3>Administrador</h3>
+                <label>
+                  <span>PIN Admin</span>
+                  <input type="password" data-login-admin-pin placeholder="PIN Admin" autocomplete="off" />
+                </label>
+                <button class="btn secondary" data-action="login-admin" type="button" style="margin-top: 12px;">Entrar como Admin</button>
+                <div class="notice red" style="margin-top: 12px;">Cambiar el PIN Admin desde la pantalla Admin cuando terminen la primera configuracion.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderTitle(title, subtitle, action = "") {
+      return `
+        <div class="section-title">
+          <div>
+            <h2>${escapeHtml(title)}</h2>
+            <p>${escapeHtml(subtitle)}</p>
+          </div>
+          ${action}
+        </div>
+      `;
+    }
+
+    function renderHoja1() {
+      return `
+        <div class="stack">
+          ${renderStock("carnes", "1. CARNES Y PANES (Bolsitas Individuales)", state.carnes)}
+          ${renderStock("extras", "2. CONTROL DE EXTRAS", state.extras)}
+          ${renderStock("quesos", "3. QUESOS (CONTROL INDEPENDIENTE)", state.quesos)}
+          ${renderStock("jamones", "4. JAMONES (CONTROL INDEPENDIENTE)", state.jamones)}
+          ${renderStock("bebidas", "5. BEBIDAS (POR MARCA Y TAMAÑO)", state.bebidas)}
+        </div>
+      `;
+    }
+
+    function renderStock(kind, title, rows) {
+      return `
+        <section class="panel">
+          <div class="panel-body">
+            ${renderTitle(title, "Inicial + Entrada = Final. Final - Saldo = Salida.")}
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th class="narrow">Inicial</th>
+                    <th class="narrow">Entrada</th>
+                    <th class="narrow">Final</th>
+                    <th class="narrow">Salida</th>
+                    <th class="narrow">Saldo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map((row, index) => {
+                    const final = Number(row.inicial || 0) + Number(row.entrada || 0);
+                    const salida = final - Number(row.saldo || 0);
+                    return `
+                      <tr>
+                        <td><strong>${escapeHtml(row.producto)}</strong></td>
+                        <td><input type="number" data-stock="${kind}" data-index="${index}" data-field="inicial" value="${row.inicial}" /></td>
+                        <td><input type="number" data-stock="${kind}" data-index="${index}" data-field="entrada" value="${row.entrada}" /></td>
+                        <td><strong>${final}</strong></td>
+                        <td><strong>${salida}</strong></td>
+                        <td><input type="number" data-stock="${kind}" data-index="${index}" data-field="saldo" value="${row.saldo}" /></td>
+                      </tr>
+                    `;
+                  }).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderProductosArmados() {
+      const data = resumen();
+      return `
+        <div class="table-wrap" style="margin-top: 14px;">
+          <table>
+            <thead>
+              <tr>
+                <th colspan="5">Productos armados por cliente - 5 filas libres</th>
+              </tr>
+              <tr>
+                <th>Fila</th>
+                <th>Producto armado</th>
+                <th class="narrow">Precio</th>
+                <th class="narrow">Cant.</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${state.productosArmados.map((row, index) => {
+                const subtotal = Number(row.precio || 0) * Number(row.cantidad || 0);
+                return `
+                  <tr>
+                    <td><strong>${index + 1}</strong></td>
+                    <td><input data-armado="${index}" data-field="nombre" value="${escapeHtml(row.nombre)}" placeholder="Ej: chivito armado / especial cliente" /></td>
+                    <td><input type="number" data-armado="${index}" data-field="precio" value="${row.precio}" /></td>
+                    <td><input type="number" data-armado="${index}" data-field="cantidad" value="${row.cantidad}" /></td>
+                    <td><strong>${gs(subtotal)}</strong></td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="4">TOTAL PRODUCTOS ARMADOS</td>
+                <td>${gs(data.totalProductosArmados)}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderHoja2() {
+      const data = resumen();
+      return `
+        <section class="panel">
+          <div class="panel-body">
+            ${renderTitle("4. VENTA DETALLADA DEL DÍA", "Precio y subtotal se calculan automáticamente. Pedidos Ya se carga en su módulo separado.")}
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Categoría</th>
+                    <th>Producto</th>
+                    <th>Precio venta</th>
+                    <th class="narrow">Cant.</th>
+                    <th>Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${productos.map((producto, index) => {
+                    const venta = state.ventas[index] || { productoId: producto.id, cantidad: 0 };
+                    const subtotal = producto.precio * Number(venta.cantidad || 0);
+                    return `
+                      <tr>
+                        <td><strong>${escapeHtml(producto.categoria)}</strong></td>
+                        <td>${escapeHtml(producto.nombre)}</td>
+                        <td>${gs(producto.precio)}</td>
+                        <td><input type="number" data-venta="${index}" value="${venta.cantidad}" /></td>
+                        <td><strong>${gs(subtotal)}</strong></td>
+                      </tr>
+                    `;
+                  }).join("")}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="4">VENTA PRODUCTOS DE PLANILLA</td>
+                    <td>${gs(data.totalVentasPlanilla)}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="4">PRODUCTOS ARMADOS POR CLIENTE</td>
+                    <td>${gs(data.totalProductosArmados)}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="4">VENTA TOTAL PLANILLA</td>
+                    <td>${gs(data.totalVentasLocal)}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="4">VENTA TOTAL DEL DIA</td>
+                    <td>${gs(data.totalVentaDia)}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            ${renderProductosArmados()}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderPedidosYa() {
+      const data = resumen();
+      const addButton = `<button class="btn" data-action="add-py" type="button"><span>+</span><span>Agregar pedido</span></button>`;
+
+      return `
+        <section class="panel">
+          <div class="panel-body">
+            ${renderTitle("PEDIDOS YA - POR COMANDA", "Control de productos, stock y monto registrado.", addButton)}
+            <div class="inline-grid">
+              <label>
+                <span>Total manual Pedidos Ya</span>
+                <input type="number" data-field="totalPYManual" value="${state.totalPYManual}" placeholder="0 para calcular por productos" />
+              </label>
+              <div class="notice red">Pedidos Ya ya esta incluido en Hoja 2. Aca solo se registra para separar medios de pago y calcular efectivo.</div>
+              <div class="notice amber span-2">Si cargas total manual, ese total reemplaza el calculo por productos. Si queda en 0, calcula por producto al mismo precio de planilla.</div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>N° Pedido</th>
+                    <th>Producto</th>
+                    <th class="narrow">Cant.</th>
+                    <th>Precio planilla</th>
+                    <th>Total bruto</th>
+                    <th class="row-actions"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${state.pedidosYa.map((pedido, index) => {
+                    const producto = productById(pedido.productoId);
+                    return `
+                      <tr>
+                        <td><input data-py="${index}" data-field="nro" value="${escapeHtml(pedido.nro)}" /></td>
+                        <td><select data-py="${index}" data-field="productoId">${productOptions(pedido.productoId)}</select></td>
+                        <td><input type="number" data-py="${index}" data-field="cantidad" value="${pedido.cantidad}" /></td>
+                        <td>${gs(producto.precio)}</td>
+                        <td><strong>${gs(producto.precio * Number(pedido.cantidad || 0))}</strong></td>
+                        <td class="row-actions"><button class="btn danger" data-delete-py="${index}" type="button" title="Eliminar">x</button></td>
+                      </tr>
+                    `;
+                  }).join("")}
+                </tbody>
+                <tfoot>
+                  <tr><td colspan="4">TOTAL PEDIDOS YA POR PRODUCTOS</td><td colspan="2">${gs(data.pyLista)}</td></tr>
+                  <tr><td colspan="4">TOTAL MANUAL PEDIDOS YA</td><td colspan="2">${gs(data.pyManual)}</td></tr>
+                  <tr><td colspan="4">TOTAL PEDIDOS YA REGISTRADO</td><td colspan="2">${gs(data.pyBruto)}</td></tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderHoja3() {
+      const data = resumen();
+      return `
+        <section class="panel">
+          <div class="panel-body">
+            ${renderTitle("5. EGRESOS (PAGOS DIARIOS Y GASTOS)", "Se descuenta de la caja cobrada real.")}
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Concepto</th>
+                    <th>Nombre y apellido</th>
+                    <th class="narrow">Monto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${state.egresos.map((egreso, index) => `
+                    <tr>
+                      <td><strong>${escapeHtml(egreso.concepto)}</strong></td>
+                      <td><input data-egreso="${index}" data-field="nombre" value="${escapeHtml(egreso.nombre)}" /></td>
+                      <td><input type="number" data-egreso="${index}" data-field="monto" value="${egreso.monto}" /></td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+                <tfoot>
+                  <tr><td colspan="2">TOTAL EGRESOS</td><td>${gs(data.totalEgresos)}</td></tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderHoja4() {
+      const data = resumen();
+      const cierre = currentCierre();
+      const diferenciaEfectivo = data.efectivoFisico - data.efectivoAEntregar;
+      const statusClass = diferenciaEfectivo === 0 ? "ok" : "alert";
+      return `
+        <section class="panel">
+          <div class="panel-body">
+            ${renderTitle("6. ARQUEO FINAL DE CAJA", "Primero se carga QR/electronico. Luego el sistema calcula venta efectivo segun planilla y al final compara con el efectivo contado.")}
+            <div class="two-col">
+              <div class="summary-box">
+                <h3>BLOQUE A - QR Y VALORES NO FISICOS</h3>
+                <label>
+                  <span>QR / Transferencia acreditada</span>
+                  <input type="number" data-field="qr" value="${state.qr}" />
+                </label>
+                ${renderSummaryRow("QR / transferencia acreditada", data.qrAcreditado)}
+                ${renderSummaryRow("PedidosYa registrado", data.pyBruto)}
+                ${renderSummaryRow("Total no fisico registrado", data.qrAcreditado + data.pyBruto)}
+                <div class="notice red" style="margin-top: 14px;">QR y PedidosYa no se suman al efectivo fisico contado.</div>
+              </div>
+              <div class="summary-box">
+                <h3>BLOQUE B - EFECTIVO SEGUN PLANILLA</h3>
+                ${renderSummaryRow("Venta total del dia", data.totalVentaDia)}
+                ${renderSummaryRow("(-) PedidosYa", -data.pyBruto)}
+                ${renderSummaryRow("(-) QR / electronico", -data.qrAcreditado)}
+                <div class="final-total">
+                  <p>Venta efectivo segun planilla</p>
+                  <strong>${gs(data.ventaEfectivoPlanilla)}</strong>
+                </div>
+              </div>
+            </div>
+            <div class="two-col" style="margin-top: 14px;">
+              <div class="summary-box">
+                <h3>BLOQUE C - RESULTADO DEL ARQUEO</h3>
+                <label>
+                  <span>Efectivo real contado despues de egresos</span>
+                  <input type="number" data-field="efectivo" value="${state.efectivo}" />
+                </label>
+                <label style="margin-top: 10px;">
+                  <span>Caja chica</span>
+                  <input type="number" data-cierre-field="cajaChica" value="${cierre.cajaChica}" />
+                </label>
+                ${renderSummaryRow("Venta efectivo segun planilla", data.ventaEfectivoPlanilla)}
+                ${renderSummaryRow("(-) Egresos Hoja 3", -data.totalEgresos)}
+                ${renderSummaryRow("(+) Caja chica", data.cajaChica)}
+                <div class="final-total">
+                  <p>Efectivo a entregar</p>
+                  <strong>${gs(data.efectivoAEntregar)}</strong>
+                </div>
+                ${renderSummaryRow("Efectivo real contado", data.efectivoFisico)}
+                <div class="final-total ${statusClass}">
+                  <p>Faltante / sobrante</p>
+                  <strong>${diferenciaCajaLabel(diferenciaEfectivo)}</strong>
+                </div>
+                <div class="notice amber" style="margin-top: 14px;">Cargar el efectivo real que quedo despues de pagar egresos. Caja chica suma al efectivo a entregar. Si no coincide, aca salta faltante o sobrante.</div>
+              </div>
+              <div class="summary-box">
+                <h3>Firmas</h3>
+                <label>
+                  <span>Firma encargado</span>
+                  <input data-field="firmaEncargado" value="${escapeHtml(state.firmaEncargado)}" />
+                </label>
+                <label style="margin-top: 10px;">
+                  <span>Firma verificacion</span>
+                  <input data-field="firmaVerificacion" value="${escapeHtml(state.firmaVerificacion)}" />
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function currentCierre() {
+      if (!state.cierres[state.local]) {
+        state.cierres[state.local] = defaultCierre();
+      }
+      return state.cierres[state.local];
+    }
+
+    function cierreCalculos() {
+      const data = resumen();
+      const cierre = currentCierre();
+      const cajaChica = Number(cierre.cajaChica || 0);
+      const cajaFisicaReal = Number(data.efectivoFisico || 0);
+      const efectivoSobrante = Number(cierre.efectivoSobrante || 0);
+      const efectivoRendido = cajaFisicaReal;
+      const efectivoEsperado = data.efectivoAEntregar;
+      const diferenciaVentaEfectivo = cajaFisicaReal - data.efectivoAEntregar;
+      const diferenciaCaja = diferenciaVentaEfectivo;
+      return { ...data, cajaChica, cajaFisicaReal, efectivoSobrante, efectivoRendido, efectivoEsperado, diferenciaVentaEfectivo, diferenciaCaja };
+    }
+
+    function stockGroups() {
+      return [
+        ["Carnes y panes", state.carnes],
+        ["Extras", state.extras],
+        ["Quesos", state.quesos],
+        ["Jamones", state.jamones],
+        ["Bebidas", state.bebidas]
+      ];
+    }
+
+    function renderCierreStock() {
+      return stockGroups().map(([title, rows]) => `
+        <div class="table-wrap" style="margin-top: 12px;">
+          <table>
+            <thead>
+              <tr>
+                <th>${escapeHtml(title)}</th>
+                <th class="narrow">Inicial</th>
+                <th class="narrow">Entrada</th>
+                <th class="narrow">Salida</th>
+                <th class="narrow">Saldo final</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map((row) => {
+                const final = Number(row.inicial || 0) + Number(row.entrada || 0);
+                const salida = final - Number(row.saldo || 0);
+                return `
+                  <tr>
+                    <td><strong>${escapeHtml(row.producto)}</strong></td>
+                    <td>${Number(row.inicial || 0)}</td>
+                    <td>${Number(row.entrada || 0)}</td>
+                    <td><strong>${salida}</strong></td>
+                    <td><strong>${Number(row.saldo || 0)}</strong></td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      `).join("");
+    }
+
+    function renderCierre() {
+      const cierre = currentCierre();
+      const data = cierreCalculos();
+      const statusClass = data.diferenciaCaja === 0 ? "ok" : "alert";
+      const statusText = data.diferenciaCaja === 0 ? "Cuadre efectivo OK" : "Faltante / sobrante";
+      const action = `
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
+          <button class="btn secondary" data-action="inventory-csv" type="button"><span>CSV</span><span>Inventario planilla</span></button>
+          <button class="btn" data-action="close-pdf" type="button"><span>PDF</span><span>Cerrar sucursal + informe</span></button>
+        </div>
+      `;
+
+      return `
+        <section class="panel">
+          <div class="panel-body">
+            ${renderTitle("CIERRE POR SUCURSAL", "Arqueo e informe independiente para la sucursal seleccionada.", action)}
+            <div class="inline-grid">
+              <label>
+                <span>Fecha cierre</span>
+                <input type="date" data-cierre-field="fecha" value="${escapeHtml(cierre.fecha || state.fecha)}" />
+              </label>
+              <label>
+                <span>Encargado cierre</span>
+                <input data-cierre-field="encargado" value="${escapeHtml(cierre.encargado || state.encargado)}" placeholder="Nombre del encargado" />
+              </label>
+              <label>
+                <span>Caja chica</span>
+                <input type="number" data-cierre-field="cajaChica" value="${cierre.cajaChica}" />
+              </label>
+              <label>
+                <span>Efectivo real contado despues de egresos (Hoja 4)</span>
+                <input type="number" value="${data.cajaFisicaReal}" readonly />
+              </label>
+              <label>
+                <span>Verificado por</span>
+                <input data-cierre-field="verificadoPor" value="${escapeHtml(cierre.verificadoPor)}" placeholder="CEO / supervisor" />
+              </label>
+              <div class="notice ${cierre.cerrado ? "green" : "amber"}">
+                ${cierre.cerrado ? `Ultimo cierre: ${escapeHtml(cierre.pdfGeneradoEn || cierre.horaCierre)}` : "Pendiente de cierre. Completar conteo real y emitir PDF."}
+              </div>
+            </div>
+
+            <div class="two-col">
+              <div class="summary-box">
+                <h3>BLOQUE A - VENTA DEL DIA</h3>
+                ${renderSummaryRow("Venta planilla Hoja 2", data.totalVentaDia)}
+                <div class="final-total">
+                  <p>Venta total del dia</p>
+                  <strong>${gs(data.totalVentaDia)}</strong>
+                </div>
+              </div>
+              <div class="summary-box">
+                <h3>BLOQUE B - CONTROL DE EFECTIVO</h3>
+                ${renderSummaryRow("Venta efectivo segun planilla", data.ventaEfectivoPlanilla)}
+                ${renderSummaryRow("(-) Egresos Hoja 3", -data.totalEgresos)}
+                ${renderSummaryRow("(+) Caja chica", data.cajaChica)}
+                ${renderSummaryRow("Efectivo a entregar", data.efectivoAEntregar)}
+                ${renderSummaryRow("Efectivo real contado", data.cajaFisicaReal)}
+                ${renderSummaryRow("QR / electronico", data.qrAcreditado)}
+                ${renderSummaryRow("PedidosYa", data.pyBruto)}
+                ${renderSummaryRow("Total justificado del dia", data.totalPorMedios)}
+                ${renderSummaryRow("Venta total del dia", data.totalVentaDia)}
+                <div class="final-total ${statusClass}">
+                  <p>${statusText}</p>
+                  <strong>${diferenciaCajaLabel(data.diferenciaVentaEfectivo)}</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="two-col" style="margin-top: 14px;">
+              <div class="summary-box">
+                <h3>Valores no fisicos</h3>
+                ${renderSummaryRow("QR / transferencia", data.qrAcreditado)}
+                ${renderSummaryRow("PedidosYa registrado", data.pyBruto)}
+              </div>
+              <div class="notice red">
+                Venta total del dia debe quedar justificada con efectivo contado - caja chica + egresos Hoja 3 + QR/electronico + PedidosYa. El efectivo a entregar es venta efectivo segun planilla menos egresos mas caja chica.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-body">
+            ${renderTitle("Inventario para informe", "El saldo final se toma de Hoja 1. El cierre lo imprime en el PDF.")}
+            ${renderCierreStock()}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderAdmin() {
+      const data = resumen();
+      const cierreActual = cierreCalculos();
+      const reports = adminReportRows();
+      const activeReports = activeAdminReports();
+      const totals = adminTotals(reports);
+      const best = activeReports.reduce((winner, row) => (!winner || row.resultadoFinal > winner.resultadoFinal ? row : winner), null);
+      const worst = activeReports.reduce((loser, row) => (!loser || row.resultadoFinal < loser.resultadoFinal ? row : loser), null);
+      const action = `
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
+          <button class="btn secondary" data-action="save-admin-summary" type="button"><span>OK</span><span>Guardar resumen actual</span></button>
+          <button class="btn" data-action="admin-pdf" type="button"><span>PDF</span><span>Informe Admin</span></button>
+        </div>
+      `;
+      return `
+        <section class="panel">
+          <div class="panel-body">
+            <div class="kpi-grid">
+              ${renderKpi("$", "Venta total Bartolo", gs(totals.ventaTotal))}
+              ${renderKpi("▣", "Venta efectivo", gs(totals.ventaEfectivoPlanilla))}
+              ${renderKpi("◉", "Total efectivo en caja", gs(totals.totalEfectivoCaja))}
+              ${renderKpi("!", "QR / electronico", gs(totals.qrAcreditado))}
+              ${renderKpi("▦", "PedidosYa", gs(totals.pedidosYaBruto))}
+            </div>
+          </div>
+        </section>
+        ${renderSeguridadAdmin()}
+        <section class="panel">
+          <div class="panel-body">
+            ${renderTitle("Efectivo a entregar Bartolo por dia", `Sumatoria de todas las sucursales para la fecha ${state.fecha}.`)}
+            <div class="two-col">
+              <div class="summary-box">
+                <h3>Total general</h3>
+                ${renderSummaryRow("Venta total Bartolo", totals.ventaTotal)}
+                ${renderSummaryRow("Efectivo a entregar", totals.efectivoAEntregar)}
+                ${renderSummaryRow("Total justificado del dia", totals.totalPorMedios)}
+                ${renderSummaryRow("Diferencia medios", totals.diferenciaMedios)}
+              </div>
+              <div class="summary-box">
+                <h3>Discriminado por medio</h3>
+                ${renderSummaryRow("Venta efectivo segun planilla", totals.ventaEfectivoPlanilla)}
+                ${renderSummaryRow("(-) Egresos Hoja 3", -totals.totalEgresos)}
+                ${renderSummaryRow("(+) Caja chica", totals.cajaChica)}
+                ${renderSummaryRow("Total efectivo en caja", totals.totalEfectivoCaja)}
+                ${renderSummaryRow("QR / electronico", totals.qrAcreditado)}
+                ${renderSummaryRow("PedidosYa", totals.pedidosYaBruto)}
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-body">
+            ${renderTitle("Informe administrador por dia", `Comparativo de sucursales solo para la fecha seleccionada: ${state.fecha}. Ganancia bruta estimada: 50% de venta total antes de pagar personal.`, action)}
+            <div class="two-col">
+              <div class="summary-box">
+                <h3>Mayor ganancia</h3>
+                ${best ? `
+                  ${renderSummaryRow(best.local, best.resultadoFinal)}
+                  ${renderSummaryRow("Venta total", best.ventaTotal)}
+                  ${renderSummaryRow("Ganancia 50% antes personal", best.gananciaBruta50)}
+                ` : `<div class="notice amber">Sin cierres guardados todavia.</div>`}
+              </div>
+              <div class="summary-box">
+                <h3>Mayor perdida / riesgo</h3>
+                ${worst ? `
+                  ${renderSummaryRow(worst.local, worst.resultadoFinal)}
+                  ${renderSummaryRow("Pagos personal", -worst.pagosPersonal)}
+                  ${renderSummaryRow("Diferencia caja", worst.diferenciaCaja)}
+                ` : `<div class="notice amber">Sin cierres guardados todavia.</div>`}
+              </div>
+            </div>
+            <div class="table-wrap" style="margin-top: 14px;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Sucursal</th>
+                    <th>Fecha</th>
+                    <th>Venta total</th>
+                    <th>Venta efectivo</th>
+                    <th>Efectivo a entregar</th>
+                    <th>Efectivo caja</th>
+                    <th>QR</th>
+                    <th>PedidosYa</th>
+                    <th>Total justificado</th>
+                    <th>Ganancia 50%</th>
+                    <th>Personal</th>
+                    <th>Resultado</th>
+                    <th>Caja dif.</th>
+                    <th>Inv. faltante</th>
+                    <th>Inv. sobrante</th>
+                    <th>Inv. dif.</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${reports.map((row) => `
+                    <tr>
+                      <td><strong>${escapeHtml(row.local)}</strong></td>
+                      <td>${escapeHtml(row.fecha || "Sin cierre")}</td>
+                      <td>${gs(row.ventaTotal)}</td>
+                      <td>${gs(row.ventaEfectivoPlanilla)}</td>
+                      <td><strong>${gs(row.efectivoAEntregar)}</strong></td>
+                      <td>${gs(row.totalEfectivoCaja)}</td>
+                      <td>${gs(row.qrAcreditado)}</td>
+                      <td>${gs(row.pedidosYaBruto)}</td>
+                      <td><strong>${gs(row.totalPorMedios)}</strong></td>
+                      <td>${gs(row.gananciaBruta50)}</td>
+                      <td>${gs(row.pagosPersonal)}</td>
+                      <td><strong>${gs(row.resultadoFinal)}</strong></td>
+                      <td><strong>${gs(row.diferenciaCaja)}</strong></td>
+                      <td>${Number(row.inventarioFaltante || 0)}</td>
+                      <td>${Number(row.inventarioSobrante || 0)}</td>
+                      <td><strong>${Number(row.inventarioDiferencia || 0)}</strong></td>
+                      <td>${escapeHtml(row.estado)}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+            <div class="notice amber" style="margin-top: 14px;">
+              Para comparar el dia, cada sucursal debe guardar o cerrar su resumen en la misma fecha seleccionada arriba. No se mezclan cierres de otros dias.
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderSeguridadAdmin() {
+      const rows = locales.map((local, index) => {
+        const config = state.seguridad.sucursales[local] || { encargado: "", pin: "", activo: true };
+        return `
+          <tr>
+            <td><strong>${escapeHtml(local)}</strong></td>
+            <td><input data-security-index="${index}" data-security-field="encargado" value="${escapeHtml(config.encargado || "")}" placeholder="Nombre encargado" /></td>
+            <td><input data-security-index="${index}" data-security-field="pin" value="${escapeHtml(config.pin || "")}" placeholder="PIN" /></td>
+            <td><input type="checkbox" data-security-index="${index}" data-security-field="activo" ${config.activo ? "checked" : ""} /></td>
+            <td><button class="btn secondary" data-action="generate-pin" data-security-index="${index}" type="button">Generar PIN</button></td>
+          </tr>
+        `;
+      }).join("");
+
+      return `
+        <section class="panel">
+          <div class="panel-body">
+            ${renderTitle("Seguridad temporal por PIN", "Cada encargado entra solo a su sucursal asignada. Admin no aparece para encargados.")}
+            <div class="inline-grid">
+              <label>
+                <span>PIN Admin</span>
+                <input data-security-admin-pin value="${escapeHtml(state.seguridad.adminPin || "")}" />
+              </label>
+              <div class="notice red span-2">Uso temporal hasta tener usuarios reales en servidor. Cambiar el PIN Admin inicial 4000.</div>
+            </div>
+            <div class="table-wrap" style="margin-top: 14px;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Sucursal asignada</th>
+                    <th>Encargado</th>
+                    <th>PIN</th>
+                    <th>Activo</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderKpi(icon, title, value) {
+      return `
+        <div class="kpi">
+          <div class="icon">${icon}</div>
+          <p>${escapeHtml(title)}</p>
+          <strong>${escapeHtml(value)}</strong>
+        </div>
+      `;
+    }
+
+    function renderSummaryRow(label, value) {
+      const formatted = gs(value);
+      return `
+        <div class="summary-row">
+          <span>${escapeHtml(label)}</span>
+          <b>${formatted}</b>
+        </div>
+      `;
+    }
+
+    function cerrarSucursalPdf() {
+      const cierre = currentCierre();
+      const now = new Date().toLocaleString("es-PY");
+      cierre.fecha = cierre.fecha || state.fecha;
+      cierre.encargado = cierre.encargado || state.encargado || "";
+      cierre.horaCierre = now;
+      cierre.pdfGeneradoEn = now;
+      cierre.cerrado = true;
+      guardarResumenSucursal();
+      downloadPdf(`cierre-bartolo-${slugText(state.local)}-${cierre.fecha || today()}.pdf`, buildCierrePdfReport());
+    }
+
+    function buildCierrePdfReport() {
+      const cierre = currentCierre();
+      const data = cierreCalculos();
+      const inventario = inventarioResumen();
+      const egresosActivos = state.egresos.filter((egreso) => Number(egreso.monto || 0) || String(egreso.nombre || "").trim());
+      const armados = productosArmadosActivos();
+      const diferencia = Number(data.diferenciaVentaEfectivo || 0);
+      const statusTone = diferencia === 0 ? "ok" : "alert";
+      return {
+        type: "visual-cierre",
+        title: "BARTOLO JUNIOR",
+        subtitle: "Cierre de sucursal",
+        meta: [
+          `Sucursal: ${state.local}`,
+          `Fecha planilla: ${state.fecha}`,
+          `Fecha cierre: ${cierre.fecha || state.fecha}`,
+          `Encargado: ${cierre.encargado || state.encargado || "-"}`,
+          `Verificado por: ${cierre.verificadoPor || "-"}`,
+          `Hora cierre: ${cierre.horaCierre || "-"}`
+        ],
+        status: {
+          label: diferencia === 0 ? "Caja OK" : "Revisar caja",
+          value: diferenciaCajaLabel(diferencia),
+          tone: statusTone
+        },
+        cards: [
+          { label: "Venta total", value: gs(data.totalVentaDia), tone: "dark" },
+          { label: "Efectivo planilla", value: gs(data.ventaEfectivoPlanilla), tone: "blue" },
+          { label: "Efectivo a entregar", value: gs(data.efectivoAEntregar), tone: "green" },
+          { label: "Diferencia", value: diferenciaCajaLabel(diferencia), tone: statusTone }
+        ],
+        sections: [
+          {
+            title: "Control rapido por medios de pago",
+            rows: [
+              ["Venta total del dia", gs(data.totalVentaDia)],
+              ["QR / electronico", gs(data.qrAcreditado)],
+              ["PedidosYa", gs(data.pyBruto)],
+              ["Venta efectivo segun planilla", gs(data.ventaEfectivoPlanilla)],
+              ["(-) Egresos Hoja 3", `-${gs(data.totalEgresos)}`],
+              ["(+) Caja chica", gs(data.cajaChica)],
+              ["Efectivo a entregar", gs(data.efectivoAEntregar)],
+              ["Efectivo real contado despues de egresos", gs(data.cajaFisicaReal)],
+              ["Total justificado del dia", gs(data.totalPorMedios)],
+              ["Faltante / sobrante", diferenciaCajaLabel(data.diferenciaVentaEfectivo)]
+            ],
+            note: "Efectivo a entregar = venta efectivo segun planilla - egresos Hoja 3 + caja chica. Venta total del dia se justifica con efectivo contado - caja chica + egresos + QR/electronico + PedidosYa."
+          },
+          {
+            title: "Valores no fisicos",
+            rows: [
+              ["QR / transferencia", gs(data.qrAcreditado)],
+              ["PedidosYa registrado", gs(data.pyBruto)]
+            ]
+          },
+          {
+            title: "Gastos Hoja 3",
+            rows: egresosActivos.length
+              ? egresosActivos.map((egreso) => [`${egreso.concepto}${egreso.nombre ? ` - ${egreso.nombre}` : ""}`, gs(egreso.monto)])
+              : [["Sin gastos cargados", gs(0)]]
+          }
+        ],
+        armados: armados.map((row, index) => ({
+          producto: `${index + 1}. ${row.nombre || "Producto armado"}`,
+          detalle: `Cant. ${row.cantidad || 0} x ${gs(row.precio)}`,
+          total: gs(Number(row.precio || 0) * Number(row.cantidad || 0))
+        })),
+        inventorySummary: inventario,
+        inventoryRows: inventoryRows(),
+        footer: [
+          "Firma encargado: ______________________________",
+          "Firma verificacion: ____________________________"
+        ]
+      };
+    }
+
+    function buildCierrePdfLines() {
+      const cierre = currentCierre();
+      const data = cierreCalculos();
+      const lines = [
+        "BARTOLO JUNIOR - CIERRE DE SUCURSAL",
+        `Sucursal: ${state.local}`,
+        `Fecha planilla: ${state.fecha}`,
+        `Fecha cierre: ${cierre.fecha || state.fecha}`,
+        `Encargado: ${cierre.encargado || state.encargado || ""}`,
+        `Verificado por: ${cierre.verificadoPor || ""}`,
+        `Hora cierre: ${cierre.horaCierre || ""}`,
+        "",
+        "BLOQUE A - VENTA DEL DIA",
+        `Venta productos de planilla: ${gs(data.totalVentasPlanilla)}`,
+        `Productos armados por cliente: ${gs(data.totalProductosArmados)}`,
+        `Venta planilla Hoja 2: ${gs(data.totalVentaDia)}`,
+        `Pedidos Ya registrado dentro de venta: ${gs(data.pyBruto)}`,
+        `Venta total del dia: ${gs(data.totalVentaDia)}`,
+        "",
+        "BLOQUE B - CONTROL DE EFECTIVO",
+        `Venta efectivo segun planilla: ${gs(data.ventaEfectivoPlanilla)}`,
+        `Egresos Hoja 3: -${gs(data.totalEgresos)}`,
+        `Caja chica: ${gs(data.cajaChica)}`,
+        `Efectivo a entregar: ${gs(data.efectivoAEntregar)}`,
+        `Efectivo real contado despues de egresos: ${gs(data.cajaFisicaReal)}`,
+        `QR / electronico: ${gs(data.qrAcreditado)}`,
+        `PedidosYa: ${gs(data.pyBruto)}`,
+        `Total justificado del dia: ${gs(data.totalPorMedios)}`,
+        `Faltante / sobrante: ${diferenciaCajaLabel(data.diferenciaVentaEfectivo)}`,
+        "",
+        "VALORES NO FISICOS",
+        `QR / transferencia: ${gs(data.qrAcreditado)}`,
+        `PedidosYa registrado: ${gs(data.pyBruto)}`,
+        "",
+        "EGRESOS"
+      ];
+
+      state.egresos.forEach((egreso) => {
+        lines.push(`${egreso.concepto}: ${egreso.nombre || "-"} - ${gs(egreso.monto)}`);
+      });
+
+      const armados = productosArmadosActivos();
+      if (armados.length) {
+        lines.push("", "PRODUCTOS ARMADOS POR CLIENTE");
+        armados.forEach((row, index) => {
+          const subtotal = Number(row.precio || 0) * Number(row.cantidad || 0);
+          lines.push(`${index + 1}. ${row.nombre || "Producto armado"} | Precio ${gs(row.precio)} | Cant. ${row.cantidad || 0} | Subtotal ${gs(subtotal)}`);
+        });
+      }
+
+      lines.push("", ...inventoryPdfPlanillaLines());
+
+      lines.push("", "OBSERVACION");
+      lines.push("Efectivo a entregar = venta efectivo segun planilla - egresos Hoja 3 + caja chica.");
+      lines.push("Venta total del dia se justifica con efectivo contado - caja chica + egresos Hoja 3 + QR/electronico + PedidosYa.");
+      lines.push("", "Firma encargado: ______________________________");
+      lines.push("Firma verificacion: ____________________________");
+      return lines;
+    }
+
+    function productosArmadosActivos() {
+      return state.productosArmados.filter((row) => {
+        return String(row.nombre || "").trim() || Number(row.precio || 0) || Number(row.cantidad || 0);
+      });
+    }
+
+    function inventoryRows() {
+      return stockGroups().flatMap(([grupo, rows]) =>
+        rows.map((row) => {
+          const inicial = Number(row.inicial || 0);
+          const entrada = Number(row.entrada || 0);
+          const final = inicial + entrada;
+          const saldo = Number(row.saldo || 0);
+          const salida = final - saldo;
+          return { grupo, producto: row.producto, inicial, entrada, final, salida, saldo };
+        })
+      );
+    }
+
+    function inventarioResumen() {
+      return inventoryRows().reduce(
+        (acc, row) => {
+          if (row.salida > 0) acc.faltante += row.salida;
+          if (row.salida < 0) acc.sobrante += Math.abs(row.salida);
+          acc.diferencia += row.salida;
+          return acc;
+        },
+        { faltante: 0, sobrante: 0, diferencia: 0 }
+      );
+    }
+
+    function inventarioResumenFromGroups(groups) {
+      return groups.flatMap(([, rows]) => rows || []).reduce(
+        (acc, row) => {
+          const inicial = Number(row.inicial || 0);
+          const entrada = Number(row.entrada || 0);
+          const saldo = Number(row.saldo || 0);
+          const salida = inicial + entrada - saldo;
+          if (salida > 0) acc.faltante += salida;
+          if (salida < 0) acc.sobrante += Math.abs(salida);
+          acc.diferencia += salida;
+          return acc;
+        },
+        { faltante: 0, sobrante: 0, diferencia: 0 }
+      );
+    }
+
+    function dailyStockGroups(dayData) {
+      return [
+        ["Carnes y panes", syncStockRows(dayData?.carnes, stockCarnesPanes)],
+        ["Extras", syncStockRows(dayData?.extras, stockExtras)],
+        ["Quesos", syncStockRows(dayData?.quesos, stockQuesos)],
+        ["Jamones", syncStockRows(dayData?.jamones, stockJamones)],
+        ["Bebidas", syncStockRows(dayData?.bebidas, stockBebidas)]
+      ];
+    }
+
+    function resumenDailyData(dayData = {}) {
+      const ventas = syncVentas(dayData.ventas);
+      const productosArmados = syncProductosArmados(dayData.productosArmados);
+      const pedidosYa = Array.isArray(dayData.pedidosYa) ? dayData.pedidosYa : [];
+      const totalVentasPlanilla = ventas.reduce((acc, venta) => {
+        const producto = productById(venta.productoId);
+        return acc + producto.precio * Number(venta.cantidad || 0);
+      }, 0);
+      const totalProductosArmados = productosArmados.reduce((acc, row) => {
+        return acc + Number(row.precio || 0) * Number(row.cantidad || 0);
+      }, 0);
+      const totalVentaDia = totalVentasPlanilla + totalProductosArmados;
+      const pyLista = pedidosYa.reduce((acc, pedido) => {
+        const producto = productById(pedido.productoId);
+        return acc + producto.precio * Number(pedido.cantidad || 0);
+      }, 0);
+      const pyManual = Number(dayData.totalPYManual || 0);
+      const pyBruto = pyManual > 0 ? pyManual : pyLista;
+      const pyComision = 0;
+      const pyNeto = pyBruto;
+      const totalEgresos = (Array.isArray(dayData.egresos) ? dayData.egresos : zeroEgresos())
+        .reduce((acc, egreso) => acc + Number(egreso.monto || 0), 0);
+      const cajaChica = Number(dayData.cierre?.cajaChica || 0);
+      const efectivoFisico = Number(dayData.efectivo || 0);
+      const qrAcreditado = Number(dayData.qr || 0);
+      const ventaEfectivoPlanilla = totalVentaDia - pyBruto - qrAcreditado;
+      const efectivoAEntregar = ventaEfectivoPlanilla - totalEgresos + cajaChica;
+      const totalPorMedios = efectivoFisico - cajaChica + totalEgresos + qrAcreditado + pyBruto;
+      const diferenciaCaja = efectivoFisico - efectivoAEntregar;
+      const diferenciaTotalMedios = totalPorMedios - totalVentaDia;
+      return {
+        totalVentaDia,
+        ventaEfectivoPlanilla,
+        cajaChica,
+        efectivoAEntregar,
+        efectivoFisico,
+        qrAcreditado,
+        pyBruto,
+        pyComision,
+        pyNeto,
+        totalEgresos,
+        totalPorMedios,
+        diferenciaCaja,
+        diferenciaTotalMedios
+      };
+    }
+
+    function esPagoPersonal(concepto) {
+      const normalized = pdfSafeText(concepto).toUpperCase();
+      return /PLANCHERO|AYUDANTE|ATENCION|ENCARGADO|DELIVERY/.test(normalized);
+    }
+
+    function pagosPersonalTotal() {
+      return state.egresos.reduce((acc, egreso) => {
+        return esPagoPersonal(egreso.concepto) ? acc + Number(egreso.monto || 0) : acc;
+      }, 0);
+    }
+
+    function otrosEgresosTotal() {
+      return state.egresos.reduce((acc, egreso) => {
+        return esPagoPersonal(egreso.concepto) ? acc : acc + Number(egreso.monto || 0);
+      }, 0);
+    }
+
+    function pagosPersonalFromEgresos(egresos = []) {
+      return egresos.reduce((acc, egreso) => {
+        return esPagoPersonal(egreso.concepto) ? acc + Number(egreso.monto || 0) : acc;
+      }, 0);
+    }
+
+    function otrosEgresosFromEgresos(egresos = []) {
+      return egresos.reduce((acc, egreso) => {
+        return esPagoPersonal(egreso.concepto) ? acc : acc + Number(egreso.monto || 0);
+      }, 0);
+    }
+
+    function buildSucursalReport() {
+      const data = cierreCalculos();
+      const cierre = currentCierre();
+      const inventario = inventarioResumen();
+      const gananciaBruta50 = data.totalVentaDia * 0.5;
+      const pagosPersonal = pagosPersonalTotal();
+      const otrosEgresos = otrosEgresosTotal();
+      const resultadoFinal = gananciaBruta50 - pagosPersonal;
+      return {
+        local: state.local,
+        fecha: cierre.fecha || state.fecha,
+        guardadoEn: new Date().toLocaleString("es-PY"),
+        encargado: cierre.encargado || state.encargado || "",
+        ventaTotal: data.totalVentaDia,
+        ventaEfectivoPlanilla: data.ventaEfectivoPlanilla,
+        totalEgresos: data.totalEgresos,
+        cajaChica: data.cajaChica,
+        efectivoAEntregar: data.efectivoAEntregar,
+        totalEfectivoCaja: data.efectivoFisico,
+        qrAcreditado: data.qrAcreditado,
+        pedidosYaBruto: data.pyBruto,
+        pedidosYaNeto: data.pyBruto,
+        pyComision: 0,
+        totalPorMedios: data.totalPorMedios,
+        diferenciaMedios: data.diferenciaTotalMedios,
+        gananciaBruta50,
+        pagosPersonal,
+        otrosEgresos,
+        resultadoFinal,
+        diferenciaCaja: data.diferenciaCaja,
+        inventarioFaltante: inventario.faltante,
+        inventarioSobrante: inventario.sobrante,
+        inventarioDiferencia: inventario.diferencia,
+        estado: resultadoFinal >= 0 ? "Ganancia" : "Perdida"
+      };
+    }
+
+    function guardarResumenSucursal() {
+      const report = buildSucursalReport();
+      state.reportesSucursales[state.local] = report;
+      state.reportesPorFecha[reportKey(report.local, report.fecha)] = report;
+    }
+
+    function buildReportFromDaily(local, fecha, dayData, storedReport = null) {
+      const daily = dayData || zeroDailyData(fecha);
+      const data = resumenDailyData(daily);
+      const egresos = Array.isArray(daily.egresos) ? daily.egresos : zeroEgresos();
+      const inventario = inventarioResumenFromGroups(dailyStockGroups(daily));
+      const pagosPersonal = pagosPersonalFromEgresos(egresos);
+      const otrosEgresos = otrosEgresosFromEgresos(egresos);
+      const gananciaBruta50 = data.totalVentaDia * 0.5;
+      const resultadoFinal = gananciaBruta50 - pagosPersonal;
+      const hasData = Boolean(
+        storedReport?.guardadoEn ||
+        data.totalVentaDia ||
+        data.totalPorMedios ||
+        data.totalEgresos ||
+        inventario.diferencia
+      );
+      return {
+        ...defaultReporteSucursal(local),
+        ...(storedReport || {}),
+        local,
+        fecha,
+        guardadoEn: storedReport?.guardadoEn || (hasData ? "En carga" : ""),
+        encargado: storedReport?.encargado || daily.encargado || "",
+        ventaTotal: data.totalVentaDia,
+        ventaEfectivoPlanilla: data.ventaEfectivoPlanilla,
+        totalEgresos: data.totalEgresos,
+        cajaChica: data.cajaChica,
+        efectivoAEntregar: data.efectivoAEntregar,
+        totalEfectivoCaja: data.efectivoFisico,
+        qrAcreditado: data.qrAcreditado,
+        pedidosYaBruto: data.pyBruto,
+        pedidosYaNeto: data.pyBruto,
+        pyComision: 0,
+        totalPorMedios: data.totalPorMedios,
+        diferenciaMedios: data.diferenciaTotalMedios,
+        gananciaBruta50,
+        pagosPersonal,
+        otrosEgresos,
+        resultadoFinal,
+        diferenciaCaja: data.diferenciaCaja,
+        inventarioFaltante: inventario.faltante,
+        inventarioSobrante: inventario.sobrante,
+        inventarioDiferencia: inventario.diferencia,
+        estado: hasData ? (resultadoFinal >= 0 ? "Ganancia" : "Perdida") : "Sin cierre"
+      };
+    }
+
+    function adminReportRows(fecha = state.fecha) {
+      return locales.map((local) => {
+        const key = reportKey(local, fecha);
+        const report = state.reportesPorFecha?.[key];
+        const legacy = state.reportesSucursales?.[local];
+        if (local === state.local && fecha === state.fecha) return buildSucursalReport();
+        if (state.sucursalDias?.[key]) return buildReportFromDaily(local, fecha, state.sucursalDias[key], report);
+        if (report) return { ...defaultReporteSucursal(local), ...report };
+        if (legacy?.fecha === fecha) return { ...defaultReporteSucursal(local), ...legacy };
+        return { ...defaultReporteSucursal(local), fecha };
+      });
+    }
+
+    function activeAdminReports(fecha = state.fecha) {
+      return adminReportRows(fecha).filter((row) => row.guardadoEn && row.fecha === fecha);
+    }
+
+    function adminTotals(reports) {
+      return reports.reduce(
+        (acc, row) => {
+          acc.ventaTotal += Number(row.ventaTotal || 0);
+          acc.ventaEfectivoPlanilla += Number(row.ventaEfectivoPlanilla || 0);
+          acc.totalEgresos += Number(row.totalEgresos || 0);
+          acc.cajaChica += Number(row.cajaChica || 0);
+          acc.efectivoAEntregar += Number(row.efectivoAEntregar || 0);
+          acc.totalEfectivoCaja += Number(row.totalEfectivoCaja || 0);
+          acc.qrAcreditado += Number(row.qrAcreditado || 0);
+          acc.pedidosYaBruto += Number(row.pedidosYaBruto || 0);
+          acc.pedidosYaNeto += Number(row.pedidosYaBruto || 0);
+          acc.pyComision += 0;
+          acc.totalPorMedios += Number(row.totalPorMedios || 0);
+          acc.diferenciaMedios += Number(row.diferenciaMedios || 0);
+          acc.gananciaBruta50 += Number(row.gananciaBruta50 || 0);
+          acc.pagosPersonal += Number(row.pagosPersonal || 0);
+          acc.resultadoFinal += Number(row.resultadoFinal || 0);
+          acc.diferenciaCaja += Number(row.diferenciaCaja || 0);
+          acc.inventarioFaltante += Number(row.inventarioFaltante || 0);
+          acc.inventarioSobrante += Number(row.inventarioSobrante || 0);
+          acc.inventarioDiferencia += Number(row.inventarioDiferencia || 0);
+          return acc;
+        },
+        {
+          ventaTotal: 0,
+          ventaEfectivoPlanilla: 0,
+          totalEgresos: 0,
+          cajaChica: 0,
+          efectivoAEntregar: 0,
+          totalEfectivoCaja: 0,
+          qrAcreditado: 0,
+          pedidosYaBruto: 0,
+          pedidosYaNeto: 0,
+          pyComision: 0,
+          totalPorMedios: 0,
+          diferenciaMedios: 0,
+          gananciaBruta50: 0,
+          pagosPersonal: 0,
+          resultadoFinal: 0,
+          diferenciaCaja: 0,
+          inventarioFaltante: 0,
+          inventarioSobrante: 0,
+          inventarioDiferencia: 0
+        }
+      );
+    }
+
+    function downloadAdminPdf() {
+      downloadPdf(`informe-admin-bartolo-${state.fecha || today()}.pdf`, buildAdminPdfReport());
+    }
+
+    function buildAdminPdfReport() {
+      const fecha = state.fecha || today();
+      const reports = adminReportRows(fecha);
+      const activeReports = activeAdminReports(fecha);
+      const totals = adminTotals(reports);
+      const best = activeReports.reduce((winner, row) => (!winner || row.resultadoFinal > winner.resultadoFinal ? row : winner), null);
+      const worst = activeReports.reduce((loser, row) => (!loser || row.resultadoFinal < loser.resultadoFinal ? row : loser), null);
+      const diffTone = totals.diferenciaMedios === 0 ? "ok" : "alert";
+      return {
+        type: "visual-admin",
+        title: "BARTOLO JUNIOR",
+        subtitle: "Informe administrador",
+        meta: [
+          `Fecha comparada: ${fecha}`,
+          `Fecha informe: ${new Date().toLocaleString("es-PY")}`,
+          `Sucursales: ${locales.length}`,
+          `Con datos: ${activeReports.length}`
+        ],
+        status: {
+          label: "Efectivo a entregar Bartolo",
+          value: gs(totals.efectivoAEntregar),
+          tone: diffTone,
+          rowLabel: "Efectivo a entregar",
+          note: "Sumatoria del efectivo a entregar por las sucursales: venta efectivo segun planilla menos egresos Hoja 3 mas caja chica."
+        },
+        cards: [
+          { label: "Venta total", value: gs(totals.ventaTotal), tone: "dark" },
+          { label: "Efectivo planilla", value: gs(totals.ventaEfectivoPlanilla), tone: "blue" },
+          { label: "Efectivo a entregar", value: gs(totals.efectivoAEntregar), tone: "green" },
+          { label: "Efectivo en caja", value: gs(totals.totalEfectivoCaja), tone: "green" },
+          { label: "QR / electronico", value: gs(totals.qrAcreditado), tone: "blue" },
+          { label: "PedidosYa", value: gs(totals.pedidosYaBruto), tone: "amber" },
+          { label: "Diferencia medios", value: diferenciaCajaLabel(totals.diferenciaMedios), tone: diffTone }
+        ],
+        sections: [
+          {
+            title: "Resumen Bartolo por dia",
+            rows: [
+              ["Venta total Bartolo", gs(totals.ventaTotal)],
+              ["Venta efectivo segun planilla", gs(totals.ventaEfectivoPlanilla)],
+              ["(-) Egresos Hoja 3", `-${gs(totals.totalEgresos)}`],
+              ["(+) Caja chica", gs(totals.cajaChica)],
+              ["Efectivo a entregar", gs(totals.efectivoAEntregar)],
+              ["Total justificado del dia", gs(totals.totalPorMedios)],
+              ["Diferencia medios", diferenciaCajaLabel(totals.diferenciaMedios)],
+              ["Ganancia bruta 50%", gs(totals.gananciaBruta50)],
+              ["Pagos personal", gs(totals.pagosPersonal)],
+              ["Resultado final estimado", gs(totals.resultadoFinal)]
+            ],
+            note: "Efectivo a entregar = venta efectivo segun planilla - egresos Hoja 3 + caja chica. Venta total del dia se justifica con efectivo contado - caja chica + egresos + QR/electronico + PedidosYa."
+          },
+          {
+            title: "Ranking del dia",
+            rows: [
+              ["Mayor ganancia", best ? `${best.local} | ${gs(best.resultadoFinal)}` : "Sin datos"],
+              ["Mayor perdida / riesgo", worst ? `${worst.local} | ${gs(worst.resultadoFinal)} | Caja ${diferenciaCajaLabel(worst.diferenciaCaja)}` : "Sin datos"],
+              ["Inventario faltante total", String(totals.inventarioFaltante)],
+              ["Inventario sobrante total", String(totals.inventarioSobrante)]
+            ]
+          }
+        ],
+        detailTitle: "Detalle por sucursal",
+        detailRows: reports.map((row) => ({
+          local: row.local,
+          venta: gs(row.ventaTotal),
+          efectivo: gs(row.totalEfectivoCaja),
+          qr: gs(row.qrAcreditado),
+          py: gs(row.pedidosYaBruto),
+          entregar: gs(row.efectivoAEntregar),
+          resultado: gs(row.resultadoFinal),
+          caja: diferenciaCajaLabel(row.diferenciaCaja),
+          estado: row.estado || "Sin cierre"
+        })),
+        footer: [
+          "Criterio: venta total del dia = efectivo + QR/electronico + PedidosYa.",
+          "Ganancia bruta estimada = venta total x 50% antes de pagos de personal."
+        ]
+      };
+    }
+
+    function buildAdminPdfLines() {
+      const fecha = state.fecha || today();
+      const reports = adminReportRows(fecha);
+      const activeReports = activeAdminReports(fecha);
+      const best = activeReports.reduce((winner, row) => (!winner || row.resultadoFinal > winner.resultadoFinal ? row : winner), null);
+      const worst = activeReports.reduce((loser, row) => (!loser || row.resultadoFinal < loser.resultadoFinal ? row : loser), null);
+      const totals = reports.reduce(
+        (acc, row) => {
+          acc.ventaTotal += Number(row.ventaTotal || 0);
+          acc.gananciaBruta50 += Number(row.gananciaBruta50 || 0);
+          acc.pagosPersonal += Number(row.pagosPersonal || 0);
+          acc.resultadoFinal += Number(row.resultadoFinal || 0);
+          acc.diferenciaCaja += Number(row.diferenciaCaja || 0);
+          acc.inventarioFaltante += Number(row.inventarioFaltante || 0);
+          acc.inventarioSobrante += Number(row.inventarioSobrante || 0);
+          acc.inventarioDiferencia += Number(row.inventarioDiferencia || 0);
+          return acc;
+        },
+        {
+          ventaTotal: 0,
+          gananciaBruta50: 0,
+          pagosPersonal: 0,
+          resultadoFinal: 0,
+          diferenciaCaja: 0,
+          inventarioFaltante: 0,
+          inventarioSobrante: 0,
+          inventarioDiferencia: 0
+        }
+      );
+
+      const lines = [
+        "BARTOLO JUNIOR - INFORME ADMINISTRADOR",
+        `Fecha informe: ${new Date().toLocaleString("es-PY")}`,
+        `Fecha comparada: ${fecha}`,
+        "",
+        "RESUMEN GENERAL",
+        `Venta total: ${gs(totals.ventaTotal)}`,
+        `Ganancia bruta 50% antes personal: ${gs(totals.gananciaBruta50)}`,
+        `Pagos de personal: ${gs(totals.pagosPersonal)}`,
+        `Resultado final estimado: ${gs(totals.resultadoFinal)}`,
+        `Diferencia caja total: ${gs(totals.diferenciaCaja)}`,
+        `Inventario faltante total: ${totals.inventarioFaltante}`,
+        `Inventario sobrante total: ${totals.inventarioSobrante}`,
+        `Inventario diferencia neta: ${totals.inventarioDiferencia}`,
+        "",
+        "RANKING",
+        best ? `Mayor ganancia: ${best.local} | Resultado ${gs(best.resultadoFinal)} | Venta ${gs(best.ventaTotal)}` : "Mayor ganancia: sin cierres guardados",
+        worst ? `Mayor perdida/riesgo: ${worst.local} | Resultado ${gs(worst.resultadoFinal)} | Caja dif. ${gs(worst.diferenciaCaja)}` : "Mayor perdida/riesgo: sin cierres guardados",
+        "",
+        "DETALLE POR SUCURSAL"
+      ];
+
+      reports.forEach((row) => {
+        lines.push(
+          "",
+          `Sucursal: ${row.local}`,
+          `Fecha: ${row.fecha || "Sin cierre"} | Estado: ${row.estado || "Sin cierre"}`,
+          `Venta total: ${gs(row.ventaTotal)} | Ganancia 50%: ${gs(row.gananciaBruta50)} | Personal: ${gs(row.pagosPersonal)}`,
+          `Resultado final: ${gs(row.resultadoFinal)} | Caja diferencia: ${gs(row.diferenciaCaja)}`,
+          `Inventario faltante: ${Number(row.inventarioFaltante || 0)} | Sobrante: ${Number(row.inventarioSobrante || 0)} | Diferencia: ${Number(row.inventarioDiferencia || 0)}`,
+          `Guardado: ${row.guardadoEn || "-"} | Encargado: ${row.encargado || "-"}`
+        );
+      });
+
+      lines.push(
+        "",
+        "CRITERIO",
+        "Ganancia bruta estimada = Venta total del dia x 50%.",
+        "Resultado final estimado = Ganancia bruta 50% - pagos de personal.",
+        "Pagos de personal incluye planchero, ayudante, atencion cliente, encargado y delivery."
+      );
+      return lines;
+    }
+
+    function inventoryPdfPlanillaLines() {
+      const lines = ["INVENTARIO FINAL - PLANILLA"];
+      const header = [
+        fixedPdfCell("Producto", 34),
+        fixedPdfCell("Inicial", 7, "right"),
+        fixedPdfCell("Entrada", 7, "right"),
+        fixedPdfCell("Final", 7, "right"),
+        fixedPdfCell("Salida", 7, "right"),
+        fixedPdfCell("Saldo", 7, "right")
+      ].join(" ");
+      const separator = "-".repeat(header.length);
+
+      stockGroups().forEach(([grupo, rows]) => {
+        lines.push("", `GRUPO: ${grupo.toUpperCase()}`, header, separator);
+        rows.forEach((row) => {
+          const inicial = Number(row.inicial || 0);
+          const entrada = Number(row.entrada || 0);
+          const final = inicial + entrada;
+          const saldo = Number(row.saldo || 0);
+          const salida = final - saldo;
+          lines.push([
+            fixedPdfCell(row.producto, 34),
+            fixedPdfCell(inicial, 7, "right"),
+            fixedPdfCell(entrada, 7, "right"),
+            fixedPdfCell(final, 7, "right"),
+            fixedPdfCell(salida, 7, "right"),
+            fixedPdfCell(saldo, 7, "right")
+          ].join(" "));
+        });
+      });
+
+      return lines;
+    }
+
+    function fixedPdfCell(value, width, align = "left") {
+      const safe = pdfSafeText(value).replace(/\s+/g, " ").trim().slice(0, width);
+      return align === "right" ? safe.padStart(width, " ") : safe.padEnd(width, " ");
+    }
+
+    function downloadInventoryCsv() {
+      const cierre = currentCierre();
+      const rows = [
+        ["Sucursal", "Fecha cierre", "Grupo", "Producto", "Inicial", "Entrada", "Final", "Salida", "Saldo final"],
+        ...inventoryRows().map((row) => [
+          state.local,
+          cierre.fecha || state.fecha,
+          row.grupo,
+          row.producto,
+          row.inicial,
+          row.entrada,
+          row.final,
+          row.salida,
+          row.saldo
+        ])
+      ];
+      downloadCsv(`inventario-bartolo-${slugText(state.local)}-${cierre.fecha || today()}.csv`, rows);
+    }
+
+    function downloadCsv(filename, rows) {
+      const csv = `\ufeff${rows.map((row) => row.map(csvCell).join(";")).join("\n")}`;
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function exportBackup() {
+      persistCurrentDay();
+      const payload = {
+        type: "bartolo-junior-planilla-backup",
+        version: "1.1",
+        storageKey,
+        exportedAt: new Date().toISOString(),
+        state
+      };
+      downloadJson(`respaldo-bartolo-${state.fecha || today()}.json`, payload);
+    }
+
+    function downloadJson(filename, payload) {
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function importBackupFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const payload = JSON.parse(String(reader.result || "{}"));
+          const imported = payload?.state || payload;
+          if (!imported || typeof imported !== "object" || (!imported.sucursalDias && !imported.cierres)) {
+            throw new Error("El archivo no parece ser un respaldo de la planilla Bartolo.");
+          }
+          const ok = confirm("Esto reemplazara los datos de esta tablet/navegador por el respaldo seleccionado. Continuar?");
+          if (!ok) return;
+          state = normalizeState({ ...defaultState(), ...imported });
+          state.acceso = defaultAcceso();
+          activeTab = "hoja1";
+          saveState();
+          render();
+          alert("Respaldo importado. Inicia sesion nuevamente para seguir trabajando.");
+        } catch (error) {
+          alert(`No se pudo importar el respaldo: ${error.message}`);
+        }
+      };
+      reader.readAsText(file, "utf-8");
+    }
+
+    function csvCell(value) {
+      const text = String(value ?? "");
+      return `"${text.replaceAll('"', '""')}"`;
+    }
+
+    function downloadPdf(filename, lines) {
+      const pdf = lines && lines.type ? buildVisualPdf(lines) : buildSimplePdf(lines);
+      const blob = new Blob([pdf], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function buildVisualPdf(report) {
+      const pageWidth = 595;
+      const pageHeight = 842;
+      const margin = 36;
+      const colors = {
+        dark: [0.07, 0.07, 0.07],
+        ink: [0.08, 0.08, 0.08],
+        muted: [0.42, 0.42, 0.42],
+        line: [0.84, 0.86, 0.89],
+        white: [1, 1, 1],
+        soft: [0.96, 0.97, 0.98],
+        orange: [0.95, 0.49, 0.08],
+        blue: [0.10, 0.28, 0.62],
+        green: [0.08, 0.44, 0.22],
+        red: [0.74, 0.10, 0.10],
+        amber: [0.75, 0.42, 0.04]
+      };
+      const pageBottom = pageHeight - 44;
+      const pages = [];
+      let commands = [];
+      let y = margin;
+
+      const rgb = (color) => color.map((value) => Number(value).toFixed(3)).join(" ");
+      const toneColor = (tone) => {
+        if (tone === "ok") return colors.green;
+        if (tone === "alert") return colors.red;
+        if (tone === "blue") return colors.blue;
+        if (tone === "green") return colors.green;
+        if (tone === "amber") return colors.amber;
+        return colors.dark;
+      };
+      const pushPage = () => {
+        if (commands.length) pages.push(commands.join("\n"));
+        commands = [];
+      };
+      const rect = (x, top, width, height, fill, stroke) => {
+        const bottom = pageHeight - top - height;
+        if (fill && stroke) {
+          commands.push(`q ${rgb(fill)} rg ${rgb(stroke)} RG ${x} ${bottom} ${width} ${height} re B Q`);
+          return;
+        }
+        if (fill) commands.push(`q ${rgb(fill)} rg ${x} ${bottom} ${width} ${height} re f Q`);
+        if (stroke) commands.push(`q ${rgb(stroke)} RG 0.8 w ${x} ${bottom} ${width} ${height} re S Q`);
+      };
+      const line = (x1, top1, x2, top2, color = colors.line) => {
+        commands.push(`q ${rgb(color)} RG 0.7 w ${x1} ${pageHeight - top1} m ${x2} ${pageHeight - top2} l S Q`);
+      };
+      const text = (x, top, value, options = {}) => {
+        const size = options.size || 10;
+        const font = options.font || "F1";
+        const color = options.color || colors.ink;
+        const safe = escapePdfText(pdfSafeText(value));
+        commands.push(`BT /${font} ${size} Tf ${rgb(color)} rg 1 0 0 1 ${x} ${pageHeight - top - size} Tm (${safe}) Tj ET`);
+      };
+      const wrapVisualText = (value, width, size) => {
+        const maxLength = Math.max(8, Math.floor(width / (size * 0.53)));
+        return wrapPdfLine(pdfSafeText(value), maxLength);
+      };
+      const wrappedText = (x, top, value, width, options = {}) => {
+        const size = options.size || 10;
+        const lineHeight = options.lineHeight || size + 4;
+        const lines = wrapVisualText(value, width, size);
+        lines.forEach((row, index) => text(x, top + index * lineHeight, row, options));
+        return top + lines.length * lineHeight;
+      };
+      const ensureSpace = (height) => {
+        if (y + height <= pageBottom) return;
+        pushPage();
+        rect(0, 0, pageWidth, 48, colors.dark);
+        text(margin, 15, "BARTOLO JUNIOR", { font: "F2", size: 15, color: colors.white });
+        text(pageWidth - 180, 17, "continuacion de informe", { size: 10, color: colors.orange });
+        y = 66;
+      };
+      const shortText = (value, length) => {
+        const safe = pdfSafeText(value).replace(/\s+/g, " ").trim();
+        return safe.length > length ? `${safe.slice(0, length - 3)}...` : safe;
+      };
+      const drawCard = (x, top, width, height, card) => {
+        const bg = toneColor(card.tone);
+        rect(x, top, width, height, bg);
+        text(x + 12, top + 12, String(card.label || "").toUpperCase(), { font: "F2", size: 8, color: colors.white });
+        wrappedText(x + 12, top + 32, card.value, width - 24, { font: "F2", size: 14, lineHeight: 16, color: colors.white });
+      };
+      const drawCards = (cards) => {
+        const gap = 10;
+        const perRow = 4;
+        const width = (pageWidth - margin * 2 - gap * (perRow - 1)) / perRow;
+        for (let index = 0; index < cards.length; index += perRow) {
+          const rowCards = cards.slice(index, index + perRow);
+          ensureSpace(88);
+          rowCards.forEach((card, rowIndex) => {
+            drawCard(margin + rowIndex * (width + gap), y, width, 76, card);
+          });
+          y += 94;
+        }
+      };
+      const drawSection = (section) => {
+        const noteLines = section.note ? wrapVisualText(section.note, pageWidth - margin * 2 - 24, 9) : [];
+        const height = 38 + section.rows.length * 24 + noteLines.length * 13 + (noteLines.length ? 16 : 0);
+        ensureSpace(height + 10);
+        const start = y;
+        rect(margin, y, pageWidth - margin * 2, height, colors.white, colors.line);
+        rect(margin, y, pageWidth - margin * 2, 28, colors.soft);
+        text(margin + 12, y + 9, section.title, { font: "F2", size: 12, color: colors.ink });
+        y += 38;
+        section.rows.forEach(([label, value]) => {
+          text(margin + 12, y + 4, label, { size: 10, color: colors.ink });
+          text(pageWidth - margin - 150, y + 4, value, { font: "F2", size: 10, color: colors.ink });
+          line(margin + 12, y + 21, pageWidth - margin - 12, y + 21);
+          y += 24;
+        });
+        if (noteLines.length) {
+          y += 4;
+          noteLines.forEach((row) => {
+            text(margin + 12, y, row, { font: "F2", size: 9, color: colors.amber });
+            y += 13;
+          });
+        }
+        y = start + height + 16;
+      };
+      const drawArmados = (items) => {
+        if (!items.length) return;
+        drawSection({
+          title: "Productos armados por cliente",
+          rows: items.map((item) => [`${item.producto} | ${item.detalle}`, item.total])
+        });
+      };
+      const drawAdminDetail = (rows) => {
+        if (!rows?.length) return;
+        ensureSpace(72);
+        text(margin, y, report.detailTitle || "Detalle", { font: "F2", size: 14, color: colors.ink });
+        y += 24;
+        rect(margin, y, pageWidth - margin * 2, 24, colors.dark);
+        text(margin + 8, y + 8, "Sucursal", { font: "F2", size: 7, color: colors.white });
+        text(124, y + 8, "Venta", { font: "F2", size: 7, color: colors.white });
+        text(188, y + 8, "Efectivo", { font: "F2", size: 7, color: colors.white });
+        text(256, y + 8, "QR", { font: "F2", size: 7, color: colors.white });
+        text(314, y + 8, "PY", { font: "F2", size: 7, color: colors.white });
+        text(370, y + 8, "Entregar", { font: "F2", size: 7, color: colors.white });
+        text(442, y + 8, "Resultado", { font: "F2", size: 7, color: colors.white });
+        y += 27;
+        rows.forEach((row) => {
+          ensureSpace(25);
+          text(margin + 8, y + 6, shortText(row.local, 18), { font: "F2", size: 7, color: colors.ink });
+          text(124, y + 6, row.venta, { size: 7, color: colors.ink });
+          text(188, y + 6, row.efectivo, { size: 7, color: colors.ink });
+          text(256, y + 6, row.qr, { size: 7, color: colors.ink });
+          text(314, y + 6, row.py, { size: 7, color: colors.ink });
+          text(370, y + 6, row.entregar || row.recibido || "", { font: "F2", size: 7, color: colors.ink });
+          text(442, y + 6, row.resultado, { font: "F2", size: 7, color: colors.ink });
+          line(margin, y + 20, pageWidth - margin, y + 20);
+          y += 21;
+        });
+        y += 14;
+      };
+      const drawInventory = () => {
+        drawSection({
+          title: "Resumen inventario",
+          rows: [
+            ["Faltante total", String(report.inventorySummary.faltante || 0)],
+            ["Sobrante total", String(report.inventorySummary.sobrante || 0)],
+            ["Diferencia neta", String(report.inventorySummary.diferencia || 0)]
+          ],
+          note: "Inventario basado en Inicial + Entrada - Saldo final = Salida."
+        });
+
+        ensureSpace(70);
+        text(margin, y, "Inventario final - planilla", { font: "F2", size: 14, color: colors.ink });
+        y += 24;
+        let currentGroup = "";
+        report.inventoryRows.forEach((row) => {
+          if (row.grupo !== currentGroup) {
+            ensureSpace(54);
+            currentGroup = row.grupo;
+            rect(margin, y, pageWidth - margin * 2, 22, colors.dark);
+            text(margin + 10, y + 7, currentGroup.toUpperCase(), { font: "F2", size: 9, color: colors.white });
+            y += 26;
+            rect(margin, y, pageWidth - margin * 2, 20, colors.soft, colors.line);
+            text(margin + 8, y + 6, "Producto", { font: "F2", size: 8, color: colors.muted });
+            text(306, y + 6, "Inicial", { font: "F2", size: 8, color: colors.muted });
+            text(360, y + 6, "Entrada", { font: "F2", size: 8, color: colors.muted });
+            text(414, y + 6, "Salida", { font: "F2", size: 8, color: colors.muted });
+            text(468, y + 6, "Saldo", { font: "F2", size: 8, color: colors.muted });
+            y += 22;
+          }
+          ensureSpace(24);
+          text(margin + 8, y + 5, shortText(row.producto, 42), { size: 8, color: colors.ink });
+          text(318, y + 5, String(row.inicial), { size: 8, color: colors.ink });
+          text(374, y + 5, String(row.entrada), { size: 8, color: colors.ink });
+          text(428, y + 5, String(row.salida), { font: "F2", size: 8, color: row.salida ? colors.red : colors.ink });
+          text(482, y + 5, String(row.saldo), { font: "F2", size: 8, color: colors.ink });
+          line(margin, y + 19, pageWidth - margin, y + 19);
+          y += 20;
+        });
+        y += 12;
+      };
+      const drawFooter = () => {
+        ensureSpace(70);
+        report.footer.forEach((row) => {
+          text(margin, y, row, { font: "F2", size: 10, color: colors.ink });
+          y += 22;
+        });
+      };
+
+      rect(0, 0, pageWidth, 126, colors.dark);
+      text(margin, 26, report.title, { font: "F2", size: 27, color: colors.white });
+      text(margin, 58, report.subtitle.toUpperCase(), { font: "F2", size: 12, color: colors.orange });
+      report.meta.slice(0, 6).forEach((row, index) => {
+        text(330, 22 + index * 15, row, { size: 9, color: colors.white });
+      });
+      rect(0, 118, pageWidth, 8, colors.orange);
+      y = 146;
+      drawCards(report.cards);
+      drawSection({
+        title: report.status.label,
+        rows: [[report.status.rowLabel || "Estado", report.status.value]],
+        note: report.status.note || (report.status.tone === "ok" ? "Caja sin diferencia segun los datos cargados." : "Revisar conteo, gastos y responsable antes de firmar.")
+      });
+      report.sections.forEach(drawSection);
+      drawArmados(report.armados || []);
+      drawAdminDetail(report.detailRows || []);
+      if (report.inventorySummary && report.inventoryRows) drawInventory();
+      drawFooter();
+      pushPage();
+      return buildPdfDocumentFromPages(pages);
+    }
+
+    function buildPdfDocumentFromPages(pageContents) {
+      const pageWidth = 595;
+      const pageHeight = 842;
+      const fontRegularId = 3 + pageContents.length * 2;
+      const fontBoldId = fontRegularId + 1;
+      const fontMonoId = fontRegularId + 2;
+      const objects = [];
+      const pageIds = pageContents.map((_, index) => 3 + index * 2);
+      objects.push("<< /Type /Catalog /Pages 2 0 R >>");
+      objects.push(`<< /Type /Pages /Kids [${pageIds.map((id) => `${id} 0 R`).join(" ")}] /Count ${pageContents.length} >>`);
+      pageContents.forEach((content, index) => {
+        const pageId = 3 + index * 2;
+        const contentId = pageId + 1;
+        objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 ${fontRegularId} 0 R /F2 ${fontBoldId} 0 R /F3 ${fontMonoId} 0 R >> >> /Contents ${contentId} 0 R >>`);
+        objects.push(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+      });
+      objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>");
+      objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>");
+      objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>");
+      return buildPdfBody(objects);
+    }
+
+    function buildPdfBody(objects) {
+      let body = "%PDF-1.4\n";
+      const offsets = [0];
+      objects.forEach((object, index) => {
+        offsets.push(body.length);
+        body += `${index + 1} 0 obj\n${object}\nendobj\n`;
+      });
+
+      const xrefStart = body.length;
+      body += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+      offsets.slice(1).forEach((offset) => {
+        body += `${String(offset).padStart(10, "0")} 00000 n \n`;
+      });
+      body += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefStart}\n%%EOF`;
+      return body;
+    }
+
+    function buildSimplePdf(lines) {
+      const pageWidth = 595;
+      const pageHeight = 842;
+      const margin = 40;
+      const lineHeight = 14;
+      const maxLines = 52;
+      const pages = [];
+      let current = [];
+
+      lines.flatMap((line) => wrapPdfLine(pdfSafeText(line), 90)).forEach((line) => {
+        if (current.length >= maxLines) {
+          pages.push(current);
+          current = [];
+        }
+        current.push(line);
+      });
+      if (current.length) pages.push(current);
+
+      const fontId = 3 + pages.length * 2;
+      const objects = [];
+      const pageIds = pages.map((_, index) => 3 + index * 2);
+      objects.push("<< /Type /Catalog /Pages 2 0 R >>");
+      objects.push(`<< /Type /Pages /Kids [${pageIds.map((id) => `${id} 0 R`).join(" ")}] /Count ${pages.length} >>`);
+
+      pages.forEach((pageLines, index) => {
+        const pageId = 3 + index * 2;
+        const contentId = pageId + 1;
+        const content = [
+          "BT",
+          "/F1 10 Tf",
+          "12 TL",
+          ...pageLines.map((line, lineIndex) => {
+            const y = pageHeight - margin - lineIndex * lineHeight;
+            return `1 0 0 1 ${margin} ${y} Tm (${escapePdfText(line)}) Tj`;
+          }),
+          "ET"
+        ].join("\n");
+        objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 ${fontId} 0 R >> >> /Contents ${contentId} 0 R >>`);
+        objects.push(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+      });
+
+      objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>");
+
+      return buildPdfBody(objects);
+    }
+
+    function pdfSafeText(value) {
+      return String(value ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\x20-\x7E]/g, " ");
+    }
+
+    function escapePdfText(value) {
+      return String(value).replaceAll("\\", "\\\\").replaceAll("(", "\\(").replaceAll(")", "\\)");
+    }
+
+    function wrapPdfLine(value, maxLength) {
+      const text = String(value);
+      if (text.length <= maxLength) return [text];
+      const words = text.split(" ");
+      const lines = [];
+      let line = "";
+      words.forEach((word) => {
+        const next = line ? `${line} ${word}` : word;
+        if (next.length > maxLength) {
+          if (line) lines.push(line);
+          line = word;
+        } else {
+          line = next;
+        }
+      });
+      if (line) lines.push(line);
+      return lines;
+    }
+
+    function slugText(value) {
+      return pdfSafeText(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "sucursal";
+    }
+
+    root.addEventListener("click", (event) => {
+      const exportBackupButton = event.target.closest("[data-action='export-backup']");
+      if (exportBackupButton) {
+        exportBackup();
+        return;
+      }
+
+      const importBackupButton = event.target.closest("[data-action='import-backup']");
+      if (importBackupButton) {
+        root.querySelector("[data-backup-input]")?.click();
+        return;
+      }
+
+      const logout = event.target.closest("[data-action='logout']");
+      if (logout) {
+        state.acceso = defaultAcceso();
+        saveState();
+        render();
+        return;
+      }
+
+      const loginAdmin = event.target.closest("[data-action='login-admin']");
+      if (loginAdmin) {
+        const pin = root.querySelector("[data-login-admin-pin]")?.value?.trim() || "";
+        if (pin !== String(state.seguridad.adminPin || "").trim()) {
+          alert("PIN Admin incorrecto.");
+          return;
+        }
+        state.acceso = { tipo: "admin", local: "", nombre: "Administrador" };
+        activeTab = "admin";
+        saveState();
+        render();
+        return;
+      }
+
+      const loginEncargado = event.target.closest("[data-action='login-encargado']");
+      if (loginEncargado) {
+        const pin = root.querySelector("[data-login-pin]")?.value?.trim() || "";
+        const local = findSucursalByPin(pin);
+        if (!local) {
+          alert("PIN de encargado incorrecto o inactivo.");
+          return;
+        }
+        const config = state.seguridad.sucursales[local] || {};
+        persistCurrentDay();
+        state.local = local;
+        loadCurrentDay();
+        state.acceso = { tipo: "encargado", local, nombre: config.encargado || "Encargado" };
+        state.encargado = config.encargado || state.encargado;
+        activeTab = "hoja1";
+        saveState();
+        render();
+        return;
+      }
+
+      const generatePin = event.target.closest("[data-action='generate-pin']");
+      if (generatePin) {
+        const local = locales[Number(generatePin.dataset.securityIndex)];
+        if (local && state.seguridad.sucursales[local]) {
+          state.seguridad.sucursales[local].pin = randomPin();
+          saveState();
+          render();
+        }
+        return;
+      }
+
+      const tab = event.target.closest("[data-tab]");
+      if (tab) {
+        if (tab.dataset.tab === "admin" && !isAdminAccess()) return;
+        activeTab = tab.dataset.tab;
+        render();
+        return;
+      }
+
+      const addPy = event.target.closest("[data-action='add-py']");
+      if (addPy) {
+        state.pedidosYa.push({
+          nro: `PY-${String(state.pedidosYa.length + 1).padStart(3, "0")}`,
+          productoId: "15",
+          cantidad: 1
+        });
+        saveState();
+        render();
+        return;
+      }
+
+      const closePdf = event.target.closest("[data-action='close-pdf']");
+      if (closePdf) {
+        cerrarSucursalPdf();
+        saveState();
+        render();
+        return;
+      }
+
+      const inventoryCsv = event.target.closest("[data-action='inventory-csv']");
+      if (inventoryCsv) {
+        downloadInventoryCsv();
+        return;
+      }
+
+      const saveAdminSummary = event.target.closest("[data-action='save-admin-summary']");
+      if (saveAdminSummary) {
+        guardarResumenSucursal();
+        saveState();
+        render();
+        return;
+      }
+
+      const adminPdf = event.target.closest("[data-action='admin-pdf']");
+      if (adminPdf) {
+        guardarResumenSucursal();
+        saveState();
+        downloadAdminPdf();
+        render();
+        return;
+      }
+
+      const deletePy = event.target.closest("[data-delete-py]");
+      if (deletePy) {
+        state.pedidosYa.splice(Number(deletePy.dataset.deletePy), 1);
+        saveState();
+        render();
+      }
+    });
+
+    root.addEventListener("change", (event) => {
+      const target = event.target;
+      const field = target.dataset.field;
+
+      if (target.dataset.backupInput !== undefined) {
+        importBackupFile(target.files?.[0]);
+        target.value = "";
+        return;
+      }
+
+      if (field === "fecha" || field === "local") {
+        if (field === "local" && !isAdminAccess()) {
+          render();
+          return;
+        }
+        changeDayContext(field, target.value);
+        return;
+      }
+
+      if (target.dataset.securityAdminPin !== undefined) {
+        state.seguridad.adminPin = target.value;
+        saveState();
+        return;
+      }
+
+      if (target.dataset.securityIndex !== undefined && target.dataset.securityField) {
+        const local = locales[Number(target.dataset.securityIndex)];
+        const securityField = target.dataset.securityField;
+        if (local && state.seguridad.sucursales[local]) {
+          state.seguridad.sucursales[local][securityField] = target.type === "checkbox" ? target.checked : target.value;
+          saveState();
+        }
+        return;
+      }
+
+      if (target.dataset.stock) {
+        const row = state[target.dataset.stock][Number(target.dataset.index)];
+        row[field] = toNumber(target.value);
+        saveState();
+        render();
+        return;
+      }
+
+      if (target.dataset.venta) {
+        const index = Number(target.dataset.venta);
+        state.ventas[index].cantidad = toNumber(target.value);
+        saveState();
+        render();
+        return;
+      }
+
+      if (target.dataset.armado) {
+        const row = state.productosArmados[Number(target.dataset.armado)];
+        row[field] = field === "nombre" ? target.value : toNumber(target.value);
+        saveState();
+        render();
+        return;
+      }
+
+      if (target.dataset.py) {
+        const row = state.pedidosYa[Number(target.dataset.py)];
+        row[field] = field === "cantidad" ? toNumber(target.value) : target.value;
+        saveState();
+        render();
+        return;
+      }
+
+      if (target.dataset.egreso) {
+        const row = state.egresos[Number(target.dataset.egreso)];
+        row[field] = field === "monto" ? toNumber(target.value) : target.value;
+        saveState();
+        render();
+        return;
+      }
+
+      if (target.dataset.cierreField) {
+        const cierre = currentCierre();
+        const cierreField = target.dataset.cierreField;
+        cierre[cierreField] = target.type === "number" ? toNumber(target.value) : target.value;
+        saveState();
+        render();
+        return;
+      }
+
+      if (field) {
+        state[field] = target.type === "number" ? toNumber(target.value) : target.value;
+        saveState();
+        render();
+      }
+    });
+
+    if (typeof navigator !== "undefined" && "serviceWorker" in navigator && typeof window !== "undefined" && window.isSecureContext) {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    }
+
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: planilla-bartolo-junior
+    env: node
+    buildCommand: npm install
+    startCommand: npm start

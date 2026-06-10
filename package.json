@@ -1,0 +1,14 @@
+{
+  "name": "planilla-bartolo-junior",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Planilla digital Bartolo Junior independiente.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check sw.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
