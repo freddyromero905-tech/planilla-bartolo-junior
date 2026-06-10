@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -409,6 +409,65 @@
       font-size: 12px;
     }
 
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .menu-card {
+      width: 100%;
+      min-height: 116px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--ink);
+      padding: 16px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .menu-card strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.15;
+    }
+
+    .menu-card span {
+      color: var(--muted);
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .menu-card .menu-code {
+      color: var(--accent);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .section-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .section-nav strong {
+      font-size: 18px;
+    }
+
     .hidden {
       display: none;
     }
@@ -463,7 +522,8 @@
       .inline-grid,
       .two-col,
       .kpi-grid,
-      .local-grid {
+      .local-grid,
+      .menu-grid {
         grid-template-columns: 1fr;
       }
 
@@ -472,30 +532,21 @@
         grid-column: auto;
       }
 
-      .tabs {
-        position: sticky;
-        top: 0;
-        z-index: 20;
-        display: flex;
-        overflow-x: auto;
-        gap: 8px;
-        margin: 10px -10px 0;
-        padding: 8px 10px;
-        background: rgba(243, 244, 246, 0.96);
-        border-bottom: 1px solid var(--line);
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .tab {
-        flex: 0 0 auto;
-        min-width: 118px;
-        min-height: 46px;
-        white-space: nowrap;
-      }
-
       .panel {
         margin-top: 10px;
         border-radius: 10px;
+      }
+
+      .section-nav {
+        margin: 10px -2px 0;
+      }
+
+      .section-nav .btn {
+        flex: 0 0 auto;
+      }
+
+      .menu-card {
+        min-height: 96px;
       }
 
       .panel-body {
@@ -647,17 +698,17 @@
   <div id="app" class="app"></div>
 
   <script>
-    const locales = ["MaramburÃ©", "Ã‘u GuazÃº", "CiclovÃ­a", "Costanera"];
-    const origenes = ["ProducciÃ³n Central", ...locales];
+    const locales = ["Maramburé", "Ñu Guazú", "Ciclovía", "Costanera"];
+    const origenes = ["Producción Central", ...locales];
 
     const stockCarnesPanes = [
       "LOMITO (Bolsita 80g)",
-      "HAMBURGUESA (MedallÃ³n 80g)",
-      "ÃRABE CARNE (Bolsita 150g)",
-      "ÃRABE POLLO (Bolsita 150g)",
-      "ÃRABE MIXTO (75g/75g)",
+      "HAMBURGUESA (Medallón 80g)",
+      "ÁRABE CARNE (Bolsita 150g)",
+      "ÁRABE POLLO (Bolsita 150g)",
+      "ÁRABE MIXTO (75g/75g)",
       "PAN FULL",
-      "PAN ÃRABE",
+      "PAN ÁRABE",
       "PAN HAMBURGUESA",
       "PAN SUPER PANCHO",
       "PAN GOURMET",
@@ -676,15 +727,15 @@
     ];
 
     const stockQuesos = [
-      "QUESO SÃNDWICH (Fetas)",
-      "QUESO ÃRABE (Fetas)",
+      "QUESO SÁNDWICH (Fetas)",
+      "QUESO ÁRABE (Fetas)",
       "QUESO TIPO TRIANGULO",
       "CHEDDAR (Fetas)"
     ];
 
     const stockJamones = [
-      "JAMÃ“N (Fetas)",
-      "JAMÃ“N TIPO TRIANGULO"
+      "JAMÓN (Fetas)",
+      "JAMÓN TIPO TRIANGULO"
     ];
 
     const stockBebidas = [
@@ -721,20 +772,20 @@
     ];
 
     const productos = [
-      ["SÃNDWICHES", "Sandwich Tradicional", 26000],
-      ["SÃNDWICHES", "Sandwich Doble Carne", 42000],
-      ["SÃNDWICHES", "Sandwich Mixto", 35000],
-      ["SÃNDWICHES", "Sandwich Full", 35000],
-      ["ÃRABES", "Ãrabe Mixto", 25000],
-      ["ÃRABES", "Ãrabe Pollo", 25000],
-      ["ÃRABES", "Ãrabe Mixto Completo", 28000],
-      ["ÃRABES", "Ãrabe Pollo Completo", 28000],
-      ["ÃRABES", "Ãrabe Carne Normal", 27000],
-      ["ÃRABES", "Ãrabe Carne Completo", 30000],
-      ["ÃRABES", "Arabetolo Mixto", 35000],
-      ["ÃRABES", "Arabetolo Pollo", 35000],
-      ["ÃRABES", "Arabetolo Carne", 37000],
-      ["ÃRABES", "Ãrabe Fit", 22000],
+      ["SÁNDWICHES", "Sandwich Tradicional", 26000],
+      ["SÁNDWICHES", "Sandwich Doble Carne", 42000],
+      ["SÁNDWICHES", "Sandwich Mixto", 35000],
+      ["SÁNDWICHES", "Sandwich Full", 35000],
+      ["ÁRABES", "Árabe Mixto", 25000],
+      ["ÁRABES", "Árabe Pollo", 25000],
+      ["ÁRABES", "Árabe Mixto Completo", 28000],
+      ["ÁRABES", "Árabe Pollo Completo", 28000],
+      ["ÁRABES", "Árabe Carne Normal", 27000],
+      ["ÁRABES", "Árabe Carne Completo", 30000],
+      ["ÁRABES", "Arabetolo Mixto", 35000],
+      ["ÁRABES", "Arabetolo Pollo", 35000],
+      ["ÁRABES", "Arabetolo Carne", 37000],
+      ["ÁRABES", "Árabe Fit", 22000],
       ["HAMBURGUESAS", "Hamburguesa Completa", 20000],
       ["HAMBURGUESAS", "Hamburguesa Doble", 30000],
       ["HAMBURGUESAS", "Hamburguesa Cheddar", 20000],
@@ -804,18 +855,34 @@
     }));
 
     const tabs = [
-      ["hoja1", "â–¦", "Hoja 1"],
-      ["hoja2", "â–¤", "Hoja 2"],
-      ["py", "â—‰", "Pedidos Ya"],
+      ["hoja1", "1", "Hoja 1"],
+      ["hoja2", "2", "Hoja 2"],
+      ["py", "PY", "Pedidos Ya"],
       ["hoja3", "$", "Hoja 3"],
       ["hoja4", "!", "Hoja 4"],
       ["cierre", "OK", "Cierre"],
-      ["admin", "â–¥", "Admin"]
+      ["admin", "ADM", "Admin"]
     ];
 
     const storageKey = "bartolo_junior_planilla_online_v1_1";
+    const storageBackupKey = "bartolo_junior_planilla_memoria_estable";
+    const legacyStorageKeys = [
+      "bartolo_junior_planilla_online_v1",
+      "bartolo_junior_planilla_online",
+      "bartolo_junior_online_v1_1"
+    ];
     const root = document.getElementById("app");
-    let activeTab = "hoja1";
+    let activeTab = "menu";
+
+    const tabDescriptions = {
+      hoja1: "Inventario y conteo por producto.",
+      hoja2: "Venta del día y productos armados.",
+      py: "Pedidos Ya separado del efectivo.",
+      hoja3: "Egresos, pagos y gastos.",
+      hoja4: "Arqueo de caja y efectivo a entregar.",
+      cierre: "PDF de cierre e informe de sucursal.",
+      admin: "PIN, comparativos y resumen general."
+    };
 
     const defaultSeguridad = () => ({
       adminPin: "4000",
@@ -905,7 +972,7 @@
     });
 
     const defaultState = () => ({
-      local: "Ã‘u GuazÃº",
+      local: "Ñu Guazú",
       fecha: today(),
       encargado: "",
       carnes: makeRows(stockCarnesPanes),
@@ -928,8 +995,8 @@
         { concepto: "GASTOS EXTRAORDINARIOS", nombre: "", monto: 0 },
         { concepto: "PLANCHERO", nombre: "", monto: 150000 },
         { concepto: "AYUDANTE PLANCHA", nombre: "", monto: 0 },
-        { concepto: "ATENCIÃ“N CLIENTE 1", nombre: "", monto: 0 },
-        { concepto: "ATENCIÃ“N CLIENTE 2", nombre: "", monto: 0 },
+        { concepto: "ATENCIÓN CLIENTE 1", nombre: "", monto: 0 },
+        { concepto: "ATENCIÓN CLIENTE 2", nombre: "", monto: 0 },
         { concepto: "ENCARGADO", nombre: "", monto: 0 },
         { concepto: "DELIVERY (Fijo)", nombre: "", monto: 80000 }
       ],
@@ -943,12 +1010,94 @@
       acceso: defaultAcceso()
     });
 
+    function normalizeLocalName(local) {
+      const text = String(local || "");
+      if (!text) return "Ñu Guazú";
+      const compact = text.toLowerCase();
+      if (compact.includes("guaz")) return "Ñu Guazú";
+      if (compact.includes("marambur")) return "Maramburé";
+      if (compact.includes("ciclov")) return "Ciclovía";
+      if (compact.includes("costanera")) return "Costanera";
+      return locales.includes(text) ? text : "Ñu Guazú";
+    }
+
+    function migrateLocalMap(map, factory) {
+      const migrated = {};
+      Object.entries(map || {}).forEach(([local, value]) => {
+        const cleanLocal = normalizeLocalName(local);
+        migrated[cleanLocal] = { ...(migrated[cleanLocal] || factory(cleanLocal)), ...(value || {}) };
+      });
+      return migrated;
+    }
+
+    function migrateDayMap(map) {
+      const migrated = {};
+      Object.entries(map || {}).forEach(([key, value]) => {
+        const [local, ...dateParts] = String(key).split("__");
+        const date = dateParts.join("__") || value?.fecha || today();
+        migrated[dayKey(normalizeLocalName(local), date)] = value;
+      });
+      return migrated;
+    }
+
     let state = loadState();
+
+    function unwrapStoredState(payload) {
+      if (!payload || typeof payload !== "object") return null;
+      return payload.state && typeof payload.state === "object" ? payload.state : payload;
+    }
+
+    function scoreStoredState(candidate) {
+      if (!candidate || typeof candidate !== "object") return -1;
+      const securityPins = Object.values(candidate.seguridad?.sucursales || {}).filter((row) => String(row?.pin || "").trim()).length;
+      const dayCount = Object.keys(candidate.sucursalDias || {}).length;
+      const reportCount = Object.keys(candidate.reportesPorFecha || {}).length;
+      const closedCount = Object.values(candidate.cierres || {}).filter((row) => row?.cerrado).length;
+      const salesCount = (candidate.ventas || []).reduce((acc, row) => acc + Number(row?.cantidad || 0), 0);
+      const stockMoves = ["carnes", "extras", "quesos", "jamones", "bebidas"].reduce((acc, key) => {
+        return acc + (candidate[key] || []).filter((row) =>
+          Number(row?.inicial || 0) || Number(row?.entrada || 0) || Number(row?.saldo || 0)
+        ).length;
+      }, 0);
+      const adminPinChanged = candidate.seguridad?.adminPin && String(candidate.seguridad.adminPin) !== "4000" ? 25 : 0;
+      return securityPins * 100 + dayCount * 20 + reportCount * 20 + closedCount * 50 + salesCount + stockMoves + adminPinChanged;
+    }
+
+    function readStoredState() {
+      const keys = [storageKey, storageBackupKey, ...legacyStorageKeys];
+      const candidates = [];
+      keys.forEach((key) => {
+        try {
+          const raw = localStorage.getItem(key);
+          if (!raw) return;
+          const parsed = unwrapStoredState(JSON.parse(raw));
+          if (parsed) candidates.push({ key, state: parsed, score: scoreStoredState(parsed) });
+        } catch {
+          // Ignore broken local snapshots and keep looking for the stable memory copy.
+        }
+      });
+      candidates.sort((a, b) => b.score - a.score);
+      return candidates[0]?.state || null;
+    }
+
+    function writeStoredState(nextState) {
+      const serialized = JSON.stringify(nextState);
+      const backup = JSON.stringify({
+        type: "bartolo-junior-planilla-stable-memory",
+        version: "1.1",
+        savedAt: new Date().toISOString(),
+        state: nextState
+      });
+      localStorage.setItem(storageKey, serialized);
+      localStorage.setItem(storageBackupKey, backup);
+    }
 
     function loadState() {
       try {
-        const saved = JSON.parse(localStorage.getItem(storageKey));
-        return normalizeState(saved ? { ...defaultState(), ...saved } : defaultState());
+        const saved = readStoredState();
+        const loadedState = normalizeState(saved ? { ...defaultState(), ...saved } : defaultState());
+        writeStoredState(loadedState);
+        return loadedState;
       } catch {
         return normalizeState(defaultState());
       }
@@ -956,6 +1105,7 @@
 
     function normalizeState(next) {
       const defaults = defaultState();
+      next.local = normalizeLocalName(next.local);
       const savedExtras = next.extras;
       next.carnes = syncStockRows(next.carnes, stockCarnesPanes);
       next.extras = syncStockRows(next.extras, stockExtras);
@@ -964,15 +1114,15 @@
       next.bebidas = syncStockRows(next.bebidas, stockBebidas);
       next.ventas = syncVentas(next.ventas);
       next.productosArmados = syncProductosArmados(next.productosArmados);
-      next.cierres = { ...defaults.cierres, ...(next.cierres || {}) };
+      next.cierres = { ...defaults.cierres, ...migrateLocalMap(next.cierres, defaultCierre) };
       locales.forEach((local) => {
         next.cierres[local] = { ...defaultCierre(), ...(next.cierres[local] || {}) };
       });
-      next.reportesSucursales = { ...defaults.reportesSucursales, ...(next.reportesSucursales || {}) };
+      next.reportesSucursales = { ...defaults.reportesSucursales, ...migrateLocalMap(next.reportesSucursales, defaultReporteSucursal) };
       locales.forEach((local) => {
         next.reportesSucursales[local] = { ...defaultReporteSucursal(local), ...(next.reportesSucursales[local] || {}) };
       });
-      next.reportesPorFecha = { ...(next.reportesPorFecha || {}) };
+      next.reportesPorFecha = migrateDayMap(next.reportesPorFecha || {});
       locales.forEach((local) => {
         const legacy = next.reportesSucursales[local];
         if (legacy?.fecha) {
@@ -982,7 +1132,7 @@
           };
         }
       });
-      next.sucursalDias = next.sucursalDias || {};
+      next.sucursalDias = migrateDayMap(next.sucursalDias || {});
       const currentDayKey = dayKey(next.local, next.fecha);
       if (!next.sucursalDias[currentDayKey]) {
         next.sucursalDias[currentDayKey] = buildDailyDataFrom(next);
@@ -996,7 +1146,7 @@
         ...(next.seguridad || {}),
         sucursales: {
           ...defaultSeguridad().sucursales,
-          ...((next.seguridad || {}).sucursales || {})
+          ...migrateLocalMap((next.seguridad || {}).sucursales, () => ({ encargado: "", pin: "", activo: true }))
         }
       };
       locales.forEach((local) => {
@@ -1009,6 +1159,7 @@
       });
       next.acceso = { ...defaultAcceso(), ...(next.acceso || {}) };
       if (next.acceso.tipo === "encargado") {
+        next.acceso.local = normalizeLocalName(next.acceso.local);
         next.local = next.acceso.local || next.local;
         const accessDayKey = dayKey(next.local, next.fecha);
         if (!next.sucursalDias[accessDayKey]) {
@@ -1075,8 +1226,8 @@
         { concepto: "GASTOS EXTRAORDINARIOS", nombre: "", monto: 0 },
         { concepto: "PLANCHERO", nombre: "", monto: 0 },
         { concepto: "AYUDANTE PLANCHA", nombre: "", monto: 0 },
-        { concepto: "ATENCIÃ“N CLIENTE 1", nombre: "", monto: 0 },
-        { concepto: "ATENCIÃ“N CLIENTE 2", nombre: "", monto: 0 },
+        { concepto: "ATENCIÓN CLIENTE 1", nombre: "", monto: 0 },
+        { concepto: "ATENCIÓN CLIENTE 2", nombre: "", monto: 0 },
         { concepto: "ENCARGADO", nombre: "", monto: 0 },
         { concepto: "DELIVERY (Fijo)", nombre: "", monto: 0 }
       ];
@@ -1171,7 +1322,7 @@
 
     function saveState() {
       persistCurrentDay();
-      localStorage.setItem(storageKey, JSON.stringify(state));
+      writeStoredState(state);
     }
 
     function toNumber(value) {
@@ -1311,17 +1462,17 @@
       }
       if (isEncargadoAccess()) {
         state.local = state.acceso.local || state.local;
-        if (activeTab === "admin") activeTab = "hoja1";
+        if (activeTab === "admin") activeTab = "menu";
       }
       const tabsToShow = visibleTabs();
-      if (!tabsToShow.some(([id]) => id === activeTab)) {
-        activeTab = tabsToShow[0]?.[0] || "hoja1";
+      if (activeTab !== "menu" && !tabsToShow.some(([id]) => id === activeTab)) {
+        activeTab = "menu";
       }
       root.innerHTML = `
         <header class="topbar">
           <div>
             <h1>BARTOLO JUNIOR - PLANILLA DIGITAL ONLINE</h1>
-            <p>VersiÃ³n 1.1 - Base oficial ProgramaciÃ³n 4L</p>
+            <p>Versión 1.1 - Base oficial Programación 4L</p>
           </div>
           <div class="badges">
             <span class="badge">${isAdminAccess() ? "Modo administrador" : `Encargado: ${escapeHtml(state.local)}`}</span>
@@ -1353,15 +1504,10 @@
           </div>
         </section>
 
-        <nav class="tabs" aria-label="Secciones">
-          ${tabsToShow.map(([id, icon, label]) => `
-            <button class="tab ${id === activeTab ? "active" : ""}" data-tab="${id}" type="button">
-              <span>${icon}</span><span>${label}</span>
-            </button>
-          `).join("")}
-        </nav>
+        ${activeTab === "menu" ? "" : renderSectionNav(tabsToShow)}
 
         <main>
+          ${activeTab === "menu" ? renderMenu(tabsToShow) : ""}
           ${activeTab === "hoja1" ? renderHoja1() : ""}
           ${activeTab === "hoja2" ? renderHoja2() : ""}
           ${activeTab === "py" ? renderPedidosYa() : ""}
@@ -1370,6 +1516,35 @@
           ${activeTab === "cierre" ? renderCierre() : ""}
           ${activeTab === "admin" ? renderAdmin() : ""}
         </main>
+      `;
+    }
+
+    function renderSectionNav(tabsToShow) {
+      const current = tabsToShow.find(([id]) => id === activeTab) || tabsToShow[0];
+      return `
+        <div class="section-nav">
+          <button class="btn secondary" data-tab="menu" type="button">Volver al menú</button>
+          <strong>${escapeHtml(current?.[2] || "Planilla")}</strong>
+        </div>
+      `;
+    }
+
+    function renderMenu(tabsToShow) {
+      return `
+        <section class="panel">
+          <div class="panel-body">
+            ${renderTitle("Elegir planilla", "Cada botón abre una sola hoja de trabajo. Volvés al menú cuando termines.")}
+            <div class="menu-grid">
+              ${tabsToShow.map(([id, code, label]) => `
+                <button class="menu-card" data-tab="${id}" type="button">
+                  <span class="menu-code">${escapeHtml(code)}</span>
+                  <strong>${escapeHtml(label)}</strong>
+                  <span>${escapeHtml(tabDescriptions[id] || "Abrir sección.")}</span>
+                </button>
+              `).join("")}
+            </div>
+          </div>
+        </section>
       `;
     }
 
@@ -1433,7 +1608,7 @@
           ${renderStock("extras", "2. CONTROL DE EXTRAS", state.extras)}
           ${renderStock("quesos", "3. QUESOS (CONTROL INDEPENDIENTE)", state.quesos)}
           ${renderStock("jamones", "4. JAMONES (CONTROL INDEPENDIENTE)", state.jamones)}
-          ${renderStock("bebidas", "5. BEBIDAS (POR MARCA Y TAMAÃ‘O)", state.bebidas)}
+          ${renderStock("bebidas", "5. BEBIDAS (POR MARCA Y TAMAÑO)", state.bebidas)}
         </div>
       `;
     }
@@ -1525,12 +1700,12 @@
       return `
         <section class="panel">
           <div class="panel-body">
-            ${renderTitle("4. VENTA DETALLADA DEL DÃA", "Precio y subtotal se calculan automÃ¡ticamente. Pedidos Ya se carga en su mÃ³dulo separado.")}
+            ${renderTitle("4. VENTA DETALLADA DEL DÍA", "Precio y subtotal se calculan automáticamente. Pedidos Ya se carga en su módulo separado.")}
             <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th>CategorÃ­a</th>
+                    <th>Categoría</th>
                     <th>Producto</th>
                     <th>Precio venta</th>
                     <th class="narrow">Cant.</th>
@@ -1598,7 +1773,7 @@
               <table>
                 <thead>
                   <tr>
-                    <th>NÂ° Pedido</th>
+                    <th>N° Pedido</th>
                     <th>Producto</th>
                     <th class="narrow">Cant.</th>
                     <th>Precio planilla</th>
@@ -1914,10 +2089,10 @@
           <div class="panel-body">
             <div class="kpi-grid">
               ${renderKpi("$", "Venta total Bartolo", gs(totals.ventaTotal))}
-              ${renderKpi("â–£", "Venta efectivo", gs(totals.ventaEfectivoPlanilla))}
-              ${renderKpi("â—‰", "Total efectivo en caja", gs(totals.totalEfectivoCaja))}
+              ${renderKpi("EF", "Venta efectivo", gs(totals.ventaEfectivoPlanilla))}
+              ${renderKpi("CAJA", "Total efectivo en caja", gs(totals.totalEfectivoCaja))}
               ${renderKpi("!", "QR / electronico", gs(totals.qrAcreditado))}
-              ${renderKpi("â–¦", "PedidosYa", gs(totals.pedidosYaBruto))}
+              ${renderKpi("PY", "PedidosYa", gs(totals.pedidosYaBruto))}
             </div>
           </div>
         </section>
@@ -2789,7 +2964,7 @@
           if (!ok) return;
           state = normalizeState({ ...defaultState(), ...imported });
           state.acceso = defaultAcceso();
-          activeTab = "hoja1";
+          activeTab = "menu";
           saveState();
           render();
           alert("Respaldo importado. Inicia sesion nuevamente para seguir trabajando.");
@@ -3193,7 +3368,7 @@
           return;
         }
         state.acceso = { tipo: "admin", local: "", nombre: "Administrador" };
-        activeTab = "admin";
+        activeTab = "menu";
         saveState();
         render();
         return;
@@ -3213,7 +3388,7 @@
         loadCurrentDay();
         state.acceso = { tipo: "encargado", local, nombre: config.encargado || "Encargado" };
         state.encargado = config.encargado || state.encargado;
-        activeTab = "hoja1";
+        activeTab = "menu";
         saveState();
         render();
         return;
@@ -3388,4 +3563,3 @@
   </script>
 </body>
 </html>
-
