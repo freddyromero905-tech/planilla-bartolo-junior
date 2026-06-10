@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -423,13 +423,40 @@
     }
 
     @media (max-width: 920px) {
+      body {
+        font-size: 15px;
+      }
+
+      input,
+      select,
+      button {
+        font-size: 16px;
+      }
+
+      .app {
+        max-width: none;
+        padding: 10px;
+      }
+
       .topbar {
         align-items: flex-start;
         flex-direction: column;
+        border-radius: 10px;
+        padding: 14px;
       }
 
       .badges {
         justify-content: flex-start;
+        width: 100%;
+      }
+
+      .badges .btn {
+        flex: 1 1 150px;
+      }
+
+      .badges .btn.danger {
+        flex: 0 0 52px;
+        width: 52px;
       }
 
       .form-grid,
@@ -446,25 +473,168 @@
       }
 
       .tabs {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        overflow-x: auto;
+        gap: 8px;
+        margin: 10px -10px 0;
+        padding: 8px 10px;
+        background: rgba(243, 244, 246, 0.96);
+        border-bottom: 1px solid var(--line);
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .tab {
+        flex: 0 0 auto;
+        min-width: 118px;
+        min-height: 46px;
+        white-space: nowrap;
+      }
+
+      .panel {
+        margin-top: 10px;
+        border-radius: 10px;
+      }
+
+      .panel-body {
+        padding: 12px;
+      }
+
+      .section-title {
+        flex-direction: column;
+      }
+
+      .section-title > div,
+      .section-title .btn {
+        width: 100%;
+      }
+
+      .table-wrap {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+      }
+
+      .table-wrap table,
+      .table-wrap thead,
+      .table-wrap tbody,
+      .table-wrap tfoot,
+      .table-wrap tr,
+      .table-wrap td {
+        display: block;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .table-wrap thead {
+        display: none;
+      }
+
+      .table-wrap tr {
+        margin-bottom: 10px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        padding: 10px;
+      }
+
+      .table-wrap td {
+        border-bottom: 0;
+        padding: 7px 0;
+        display: grid;
+        grid-template-columns: minmax(112px, 42%) minmax(0, 1fr);
+        gap: 10px;
+        align-items: center;
+      }
+
+      .table-wrap td::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .table-wrap td:not([data-label]) {
+        display: block;
+      }
+
+      .table-wrap td:not([data-label])::before {
+        content: "";
+        display: none;
+      }
+
+      .table-wrap tfoot tr {
+        background: #111;
+        color: #fff;
+      }
+
+      .table-wrap tfoot td {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: inherit;
+        font-weight: 800;
+      }
+
+      .table-wrap tfoot td::before {
+        display: none;
+      }
+
+      td input,
+      td select,
+      .narrow {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .row-actions {
+        width: 100%;
+        text-align: left;
+      }
+
+      .row-actions .btn {
+        width: 100%;
+      }
+
+      .summary-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .summary-row b {
+        white-space: normal;
+        font-size: 18px;
       }
     }
 
     @media (max-width: 520px) {
       .app {
-        padding: 10px;
+        padding: 8px;
       }
 
-      .tabs {
-        grid-template-columns: 1fr;
-      }
-
-      .tab {
-        justify-content: flex-start;
+      .topbar {
+        margin: -8px -8px 0;
+        border-radius: 0 0 12px 12px;
       }
 
       .topbar h1 {
-        font-size: 22px;
+        font-size: 20px;
+      }
+
+      .topbar p {
+        font-size: 13px;
+      }
+
+      .form-grid {
+        gap: 10px;
+      }
+
+      .final-total {
+        padding: 14px;
       }
 
       .final-total strong {
@@ -477,17 +647,17 @@
   <div id="app" class="app"></div>
 
   <script>
-    const locales = ["Maramburé", "Ñu Guazú", "Ciclovía", "Costanera"];
-    const origenes = ["Producción Central", ...locales];
+    const locales = ["MaramburÃ©", "Ã‘u GuazÃº", "CiclovÃ­a", "Costanera"];
+    const origenes = ["ProducciÃ³n Central", ...locales];
 
     const stockCarnesPanes = [
       "LOMITO (Bolsita 80g)",
-      "HAMBURGUESA (Medallón 80g)",
-      "ÁRABE CARNE (Bolsita 150g)",
-      "ÁRABE POLLO (Bolsita 150g)",
-      "ÁRABE MIXTO (75g/75g)",
+      "HAMBURGUESA (MedallÃ³n 80g)",
+      "ÃRABE CARNE (Bolsita 150g)",
+      "ÃRABE POLLO (Bolsita 150g)",
+      "ÃRABE MIXTO (75g/75g)",
       "PAN FULL",
-      "PAN ÁRABE",
+      "PAN ÃRABE",
       "PAN HAMBURGUESA",
       "PAN SUPER PANCHO",
       "PAN GOURMET",
@@ -506,15 +676,15 @@
     ];
 
     const stockQuesos = [
-      "QUESO SÁNDWICH (Fetas)",
-      "QUESO ÁRABE (Fetas)",
+      "QUESO SÃNDWICH (Fetas)",
+      "QUESO ÃRABE (Fetas)",
       "QUESO TIPO TRIANGULO",
       "CHEDDAR (Fetas)"
     ];
 
     const stockJamones = [
-      "JAMÓN (Fetas)",
-      "JAMÓN TIPO TRIANGULO"
+      "JAMÃ“N (Fetas)",
+      "JAMÃ“N TIPO TRIANGULO"
     ];
 
     const stockBebidas = [
@@ -551,20 +721,20 @@
     ];
 
     const productos = [
-      ["SÁNDWICHES", "Sandwich Tradicional", 26000],
-      ["SÁNDWICHES", "Sandwich Doble Carne", 42000],
-      ["SÁNDWICHES", "Sandwich Mixto", 35000],
-      ["SÁNDWICHES", "Sandwich Full", 35000],
-      ["ÁRABES", "Árabe Mixto", 25000],
-      ["ÁRABES", "Árabe Pollo", 25000],
-      ["ÁRABES", "Árabe Mixto Completo", 28000],
-      ["ÁRABES", "Árabe Pollo Completo", 28000],
-      ["ÁRABES", "Árabe Carne Normal", 27000],
-      ["ÁRABES", "Árabe Carne Completo", 30000],
-      ["ÁRABES", "Arabetolo Mixto", 35000],
-      ["ÁRABES", "Arabetolo Pollo", 35000],
-      ["ÁRABES", "Arabetolo Carne", 37000],
-      ["ÁRABES", "Árabe Fit", 22000],
+      ["SÃNDWICHES", "Sandwich Tradicional", 26000],
+      ["SÃNDWICHES", "Sandwich Doble Carne", 42000],
+      ["SÃNDWICHES", "Sandwich Mixto", 35000],
+      ["SÃNDWICHES", "Sandwich Full", 35000],
+      ["ÃRABES", "Ãrabe Mixto", 25000],
+      ["ÃRABES", "Ãrabe Pollo", 25000],
+      ["ÃRABES", "Ãrabe Mixto Completo", 28000],
+      ["ÃRABES", "Ãrabe Pollo Completo", 28000],
+      ["ÃRABES", "Ãrabe Carne Normal", 27000],
+      ["ÃRABES", "Ãrabe Carne Completo", 30000],
+      ["ÃRABES", "Arabetolo Mixto", 35000],
+      ["ÃRABES", "Arabetolo Pollo", 35000],
+      ["ÃRABES", "Arabetolo Carne", 37000],
+      ["ÃRABES", "Ãrabe Fit", 22000],
       ["HAMBURGUESAS", "Hamburguesa Completa", 20000],
       ["HAMBURGUESAS", "Hamburguesa Doble", 30000],
       ["HAMBURGUESAS", "Hamburguesa Cheddar", 20000],
@@ -634,13 +804,13 @@
     }));
 
     const tabs = [
-      ["hoja1", "▦", "Hoja 1"],
-      ["hoja2", "▤", "Hoja 2"],
-      ["py", "◉", "Pedidos Ya"],
+      ["hoja1", "â–¦", "Hoja 1"],
+      ["hoja2", "â–¤", "Hoja 2"],
+      ["py", "â—‰", "Pedidos Ya"],
       ["hoja3", "$", "Hoja 3"],
       ["hoja4", "!", "Hoja 4"],
       ["cierre", "OK", "Cierre"],
-      ["admin", "▥", "Admin"]
+      ["admin", "â–¥", "Admin"]
     ];
 
     const storageKey = "bartolo_junior_planilla_online_v1_1";
@@ -735,7 +905,7 @@
     });
 
     const defaultState = () => ({
-      local: "Ñu Guazú",
+      local: "Ã‘u GuazÃº",
       fecha: today(),
       encargado: "",
       carnes: makeRows(stockCarnesPanes),
@@ -758,8 +928,8 @@
         { concepto: "GASTOS EXTRAORDINARIOS", nombre: "", monto: 0 },
         { concepto: "PLANCHERO", nombre: "", monto: 150000 },
         { concepto: "AYUDANTE PLANCHA", nombre: "", monto: 0 },
-        { concepto: "ATENCIÓN CLIENTE 1", nombre: "", monto: 0 },
-        { concepto: "ATENCIÓN CLIENTE 2", nombre: "", monto: 0 },
+        { concepto: "ATENCIÃ“N CLIENTE 1", nombre: "", monto: 0 },
+        { concepto: "ATENCIÃ“N CLIENTE 2", nombre: "", monto: 0 },
         { concepto: "ENCARGADO", nombre: "", monto: 0 },
         { concepto: "DELIVERY (Fijo)", nombre: "", monto: 80000 }
       ],
@@ -905,8 +1075,8 @@
         { concepto: "GASTOS EXTRAORDINARIOS", nombre: "", monto: 0 },
         { concepto: "PLANCHERO", nombre: "", monto: 0 },
         { concepto: "AYUDANTE PLANCHA", nombre: "", monto: 0 },
-        { concepto: "ATENCIÓN CLIENTE 1", nombre: "", monto: 0 },
-        { concepto: "ATENCIÓN CLIENTE 2", nombre: "", monto: 0 },
+        { concepto: "ATENCIÃ“N CLIENTE 1", nombre: "", monto: 0 },
+        { concepto: "ATENCIÃ“N CLIENTE 2", nombre: "", monto: 0 },
         { concepto: "ENCARGADO", nombre: "", monto: 0 },
         { concepto: "DELIVERY (Fijo)", nombre: "", monto: 0 }
       ];
@@ -1151,7 +1321,7 @@
         <header class="topbar">
           <div>
             <h1>BARTOLO JUNIOR - PLANILLA DIGITAL ONLINE</h1>
-            <p>Versión 1.1 - Base oficial Programación 4L</p>
+            <p>VersiÃ³n 1.1 - Base oficial ProgramaciÃ³n 4L</p>
           </div>
           <div class="badges">
             <span class="badge">${isAdminAccess() ? "Modo administrador" : `Encargado: ${escapeHtml(state.local)}`}</span>
@@ -1263,7 +1433,7 @@
           ${renderStock("extras", "2. CONTROL DE EXTRAS", state.extras)}
           ${renderStock("quesos", "3. QUESOS (CONTROL INDEPENDIENTE)", state.quesos)}
           ${renderStock("jamones", "4. JAMONES (CONTROL INDEPENDIENTE)", state.jamones)}
-          ${renderStock("bebidas", "5. BEBIDAS (POR MARCA Y TAMAÑO)", state.bebidas)}
+          ${renderStock("bebidas", "5. BEBIDAS (POR MARCA Y TAMAÃ‘O)", state.bebidas)}
         </div>
       `;
     }
@@ -1291,12 +1461,12 @@
                     const salida = final - Number(row.saldo || 0);
                     return `
                       <tr>
-                        <td><strong>${escapeHtml(row.producto)}</strong></td>
-                        <td><input type="number" data-stock="${kind}" data-index="${index}" data-field="inicial" value="${row.inicial}" /></td>
-                        <td><input type="number" data-stock="${kind}" data-index="${index}" data-field="entrada" value="${row.entrada}" /></td>
-                        <td><strong>${final}</strong></td>
-                        <td><strong>${salida}</strong></td>
-                        <td><input type="number" data-stock="${kind}" data-index="${index}" data-field="saldo" value="${row.saldo}" /></td>
+                        <td data-label="Producto"><strong>${escapeHtml(row.producto)}</strong></td>
+                        <td data-label="Inicial"><input type="number" data-stock="${kind}" data-index="${index}" data-field="inicial" value="${row.inicial}" /></td>
+                        <td data-label="Entrada"><input type="number" data-stock="${kind}" data-index="${index}" data-field="entrada" value="${row.entrada}" /></td>
+                        <td data-label="Final"><strong>${final}</strong></td>
+                        <td data-label="Salida"><strong>${salida}</strong></td>
+                        <td data-label="Saldo"><input type="number" data-stock="${kind}" data-index="${index}" data-field="saldo" value="${row.saldo}" /></td>
                       </tr>
                     `;
                   }).join("")}
@@ -1330,11 +1500,11 @@
                 const subtotal = Number(row.precio || 0) * Number(row.cantidad || 0);
                 return `
                   <tr>
-                    <td><strong>${index + 1}</strong></td>
-                    <td><input data-armado="${index}" data-field="nombre" value="${escapeHtml(row.nombre)}" placeholder="Ej: chivito armado / especial cliente" /></td>
-                    <td><input type="number" data-armado="${index}" data-field="precio" value="${row.precio}" /></td>
-                    <td><input type="number" data-armado="${index}" data-field="cantidad" value="${row.cantidad}" /></td>
-                    <td><strong>${gs(subtotal)}</strong></td>
+                    <td data-label="Fila"><strong>${index + 1}</strong></td>
+                    <td data-label="Producto armado"><input data-armado="${index}" data-field="nombre" value="${escapeHtml(row.nombre)}" placeholder="Ej: chivito armado / especial cliente" /></td>
+                    <td data-label="Precio"><input type="number" data-armado="${index}" data-field="precio" value="${row.precio}" /></td>
+                    <td data-label="Cant."><input type="number" data-armado="${index}" data-field="cantidad" value="${row.cantidad}" /></td>
+                    <td data-label="Subtotal"><strong>${gs(subtotal)}</strong></td>
                   </tr>
                 `;
               }).join("")}
@@ -1355,12 +1525,12 @@
       return `
         <section class="panel">
           <div class="panel-body">
-            ${renderTitle("4. VENTA DETALLADA DEL DÍA", "Precio y subtotal se calculan automáticamente. Pedidos Ya se carga en su módulo separado.")}
+            ${renderTitle("4. VENTA DETALLADA DEL DÃA", "Precio y subtotal se calculan automÃ¡ticamente. Pedidos Ya se carga en su mÃ³dulo separado.")}
             <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th>Categoría</th>
+                    <th>CategorÃ­a</th>
                     <th>Producto</th>
                     <th>Precio venta</th>
                     <th class="narrow">Cant.</th>
@@ -1373,11 +1543,11 @@
                     const subtotal = producto.precio * Number(venta.cantidad || 0);
                     return `
                       <tr>
-                        <td><strong>${escapeHtml(producto.categoria)}</strong></td>
-                        <td>${escapeHtml(producto.nombre)}</td>
-                        <td>${gs(producto.precio)}</td>
-                        <td><input type="number" data-venta="${index}" value="${venta.cantidad}" /></td>
-                        <td><strong>${gs(subtotal)}</strong></td>
+                        <td data-label="Categoria"><strong>${escapeHtml(producto.categoria)}</strong></td>
+                        <td data-label="Producto">${escapeHtml(producto.nombre)}</td>
+                        <td data-label="Precio venta">${gs(producto.precio)}</td>
+                        <td data-label="Cant."><input type="number" data-venta="${index}" value="${venta.cantidad}" /></td>
+                        <td data-label="Subtotal"><strong>${gs(subtotal)}</strong></td>
                       </tr>
                     `;
                   }).join("")}
@@ -1428,7 +1598,7 @@
               <table>
                 <thead>
                   <tr>
-                    <th>N° Pedido</th>
+                    <th>NÂ° Pedido</th>
                     <th>Producto</th>
                     <th class="narrow">Cant.</th>
                     <th>Precio planilla</th>
@@ -1441,12 +1611,12 @@
                     const producto = productById(pedido.productoId);
                     return `
                       <tr>
-                        <td><input data-py="${index}" data-field="nro" value="${escapeHtml(pedido.nro)}" /></td>
-                        <td><select data-py="${index}" data-field="productoId">${productOptions(pedido.productoId)}</select></td>
-                        <td><input type="number" data-py="${index}" data-field="cantidad" value="${pedido.cantidad}" /></td>
-                        <td>${gs(producto.precio)}</td>
-                        <td><strong>${gs(producto.precio * Number(pedido.cantidad || 0))}</strong></td>
-                        <td class="row-actions"><button class="btn danger" data-delete-py="${index}" type="button" title="Eliminar">x</button></td>
+                        <td data-label="Nro pedido"><input data-py="${index}" data-field="nro" value="${escapeHtml(pedido.nro)}" /></td>
+                        <td data-label="Producto"><select data-py="${index}" data-field="productoId">${productOptions(pedido.productoId)}</select></td>
+                        <td data-label="Cant."><input type="number" data-py="${index}" data-field="cantidad" value="${pedido.cantidad}" /></td>
+                        <td data-label="Precio">${gs(producto.precio)}</td>
+                        <td data-label="Total"><strong>${gs(producto.precio * Number(pedido.cantidad || 0))}</strong></td>
+                        <td data-label="Accion" class="row-actions"><button class="btn danger" data-delete-py="${index}" type="button" title="Eliminar">x</button></td>
                       </tr>
                     `;
                   }).join("")}
@@ -1481,9 +1651,9 @@
                 <tbody>
                   ${state.egresos.map((egreso, index) => `
                     <tr>
-                      <td><strong>${escapeHtml(egreso.concepto)}</strong></td>
-                      <td><input data-egreso="${index}" data-field="nombre" value="${escapeHtml(egreso.nombre)}" /></td>
-                      <td><input type="number" data-egreso="${index}" data-field="monto" value="${egreso.monto}" /></td>
+                      <td data-label="Concepto"><strong>${escapeHtml(egreso.concepto)}</strong></td>
+                      <td data-label="Nombre"><input data-egreso="${index}" data-field="nombre" value="${escapeHtml(egreso.nombre)}" /></td>
+                      <td data-label="Monto"><input type="number" data-egreso="${index}" data-field="monto" value="${egreso.monto}" /></td>
                     </tr>
                   `).join("")}
                 </tbody>
@@ -1620,11 +1790,11 @@
                 const salida = final - Number(row.saldo || 0);
                 return `
                   <tr>
-                    <td><strong>${escapeHtml(row.producto)}</strong></td>
-                    <td>${Number(row.inicial || 0)}</td>
-                    <td>${Number(row.entrada || 0)}</td>
-                    <td><strong>${salida}</strong></td>
-                    <td><strong>${Number(row.saldo || 0)}</strong></td>
+                    <td data-label="${escapeHtml(title)}"><strong>${escapeHtml(row.producto)}</strong></td>
+                    <td data-label="Inicial">${Number(row.inicial || 0)}</td>
+                    <td data-label="Entrada">${Number(row.entrada || 0)}</td>
+                    <td data-label="Salida"><strong>${salida}</strong></td>
+                    <td data-label="Saldo final"><strong>${Number(row.saldo || 0)}</strong></td>
                   </tr>
                 `;
               }).join("")}
@@ -1744,10 +1914,10 @@
           <div class="panel-body">
             <div class="kpi-grid">
               ${renderKpi("$", "Venta total Bartolo", gs(totals.ventaTotal))}
-              ${renderKpi("▣", "Venta efectivo", gs(totals.ventaEfectivoPlanilla))}
-              ${renderKpi("◉", "Total efectivo en caja", gs(totals.totalEfectivoCaja))}
+              ${renderKpi("â–£", "Venta efectivo", gs(totals.ventaEfectivoPlanilla))}
+              ${renderKpi("â—‰", "Total efectivo en caja", gs(totals.totalEfectivoCaja))}
               ${renderKpi("!", "QR / electronico", gs(totals.qrAcreditado))}
-              ${renderKpi("▦", "PedidosYa", gs(totals.pedidosYaBruto))}
+              ${renderKpi("â–¦", "PedidosYa", gs(totals.pedidosYaBruto))}
             </div>
           </div>
         </section>
@@ -1822,23 +1992,23 @@
                 <tbody>
                   ${reports.map((row) => `
                     <tr>
-                      <td><strong>${escapeHtml(row.local)}</strong></td>
-                      <td>${escapeHtml(row.fecha || "Sin cierre")}</td>
-                      <td>${gs(row.ventaTotal)}</td>
-                      <td>${gs(row.ventaEfectivoPlanilla)}</td>
-                      <td><strong>${gs(row.efectivoAEntregar)}</strong></td>
-                      <td>${gs(row.totalEfectivoCaja)}</td>
-                      <td>${gs(row.qrAcreditado)}</td>
-                      <td>${gs(row.pedidosYaBruto)}</td>
-                      <td><strong>${gs(row.totalPorMedios)}</strong></td>
-                      <td>${gs(row.gananciaBruta50)}</td>
-                      <td>${gs(row.pagosPersonal)}</td>
-                      <td><strong>${gs(row.resultadoFinal)}</strong></td>
-                      <td><strong>${gs(row.diferenciaCaja)}</strong></td>
-                      <td>${Number(row.inventarioFaltante || 0)}</td>
-                      <td>${Number(row.inventarioSobrante || 0)}</td>
-                      <td><strong>${Number(row.inventarioDiferencia || 0)}</strong></td>
-                      <td>${escapeHtml(row.estado)}</td>
+                      <td data-label="Sucursal"><strong>${escapeHtml(row.local)}</strong></td>
+                      <td data-label="Fecha">${escapeHtml(row.fecha || "Sin cierre")}</td>
+                      <td data-label="Venta total">${gs(row.ventaTotal)}</td>
+                      <td data-label="Venta efectivo">${gs(row.ventaEfectivoPlanilla)}</td>
+                      <td data-label="Efectivo a entregar"><strong>${gs(row.efectivoAEntregar)}</strong></td>
+                      <td data-label="Efectivo caja">${gs(row.totalEfectivoCaja)}</td>
+                      <td data-label="QR">${gs(row.qrAcreditado)}</td>
+                      <td data-label="PedidosYa">${gs(row.pedidosYaBruto)}</td>
+                      <td data-label="Total justificado"><strong>${gs(row.totalPorMedios)}</strong></td>
+                      <td data-label="Ganancia 50%">${gs(row.gananciaBruta50)}</td>
+                      <td data-label="Personal">${gs(row.pagosPersonal)}</td>
+                      <td data-label="Resultado"><strong>${gs(row.resultadoFinal)}</strong></td>
+                      <td data-label="Caja dif."><strong>${gs(row.diferenciaCaja)}</strong></td>
+                      <td data-label="Inv. faltante">${Number(row.inventarioFaltante || 0)}</td>
+                      <td data-label="Inv. sobrante">${Number(row.inventarioSobrante || 0)}</td>
+                      <td data-label="Inv. dif."><strong>${Number(row.inventarioDiferencia || 0)}</strong></td>
+                      <td data-label="Estado">${escapeHtml(row.estado)}</td>
                     </tr>
                   `).join("")}
                 </tbody>
@@ -1857,11 +2027,11 @@
         const config = state.seguridad.sucursales[local] || { encargado: "", pin: "", activo: true };
         return `
           <tr>
-            <td><strong>${escapeHtml(local)}</strong></td>
-            <td><input data-security-index="${index}" data-security-field="encargado" value="${escapeHtml(config.encargado || "")}" placeholder="Nombre encargado" /></td>
-            <td><input data-security-index="${index}" data-security-field="pin" value="${escapeHtml(config.pin || "")}" placeholder="PIN" /></td>
-            <td><input type="checkbox" data-security-index="${index}" data-security-field="activo" ${config.activo ? "checked" : ""} /></td>
-            <td><button class="btn secondary" data-action="generate-pin" data-security-index="${index}" type="button">Generar PIN</button></td>
+            <td data-label="Sucursal"><strong>${escapeHtml(local)}</strong></td>
+            <td data-label="Encargado"><input data-security-index="${index}" data-security-field="encargado" value="${escapeHtml(config.encargado || "")}" placeholder="Nombre encargado" /></td>
+            <td data-label="PIN"><input data-security-index="${index}" data-security-field="pin" value="${escapeHtml(config.pin || "")}" placeholder="PIN" /></td>
+            <td data-label="Activo"><input type="checkbox" data-security-index="${index}" data-security-field="activo" ${config.activo ? "checked" : ""} /></td>
+            <td data-label="Accion"><button class="btn secondary" data-action="generate-pin" data-security-index="${index}" type="button">Generar PIN</button></td>
           </tr>
         `;
       }).join("");
@@ -3218,3 +3388,4 @@
   </script>
 </body>
 </html>
+
