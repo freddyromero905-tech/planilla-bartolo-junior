@@ -389,6 +389,88 @@
       word-break: break-word;
     }
 
+    .sales-kpis {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .sales-kpi {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 14px;
+    }
+
+    .sales-kpi p {
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    .sales-kpi strong {
+      display: block;
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1.1;
+      word-break: break-word;
+    }
+
+    .sales-kpi.total {
+      background: var(--dark);
+      border-color: var(--dark);
+      color: #fff;
+    }
+
+    .sales-kpi.total p {
+      color: #f8d250;
+    }
+
+    .sales-kpi.total strong {
+      color: #fff;
+      font-size: 30px;
+    }
+
+    .category-picker {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .category-chip {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      min-height: 62px;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 900;
+    }
+
+    .category-chip span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .category-chip.active {
+      background: var(--dark);
+      border-color: var(--dark);
+      color: #fff;
+    }
+
+    .category-chip.active span {
+      color: #f8d250;
+    }
+
     .local-grid {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -854,6 +936,151 @@
       precioPY: precio
     }));
 
+    const ventaCategorias = [...new Set(productos.map((producto) => producto.categoria))];
+    const ventaCategoriaLibres = "__LIBRES__";
+    const ventaCategoriaConsumos = "__CONSUMOS__";
+
+    const recetasManualArmado = {
+      "Sandwich Tradicional": {
+        "PAN SANDWICH LOMITO": 1,
+        "LOMITO (Bolsita 80g)": 1,
+        "HUEVO (Unidades)": 1,
+        "QUESO SÁNDWICH (Fetas)": 1
+      },
+      "Sandwich Doble Carne": {
+        "PAN SANDWICH LOMITO": 1,
+        "LOMITO (Bolsita 80g)": 2,
+        "QUESO SÁNDWICH (Fetas)": 1
+      },
+      "Sandwich Mixto": {
+        "PAN SANDWICH LOMITO": 1,
+        "LOMITO (Bolsita 80g)": 1,
+        "JAMÓN (Fetas)": 1,
+        "QUESO SÁNDWICH (Fetas)": 1
+      },
+      "Sandwich Full": {
+        "PAN FULL": 1,
+        "LOMITO (Bolsita 80g)": 1,
+        "HUEVO (Unidades)": 1,
+        "QUESO SÁNDWICH (Fetas)": 1,
+        "JAMÓN TIPO TRIANGULO": 1,
+        "CHEDDAR (Fetas)": 1,
+        "PANCETA (Fetas)": 2
+      },
+      "Árabe Mixto": {
+        "PAN ÁRABE": 1,
+        "ÁRABE MIXTO (75g/75g)": 1,
+        "QUESO ÁRABE (Fetas)": 3
+      },
+      "Árabe Pollo": {
+        "PAN ÁRABE": 1,
+        "ÁRABE POLLO (Bolsita 150g)": 1,
+        "QUESO ÁRABE (Fetas)": 3
+      },
+      "Árabe Mixto Completo": {
+        "PAN ÁRABE": 1,
+        "ÁRABE MIXTO (75g/75g)": 1,
+        "QUESO ÁRABE (Fetas)": 3,
+        "HUEVO (Unidades)": 1
+      },
+      "Árabe Pollo Completo": {
+        "PAN ÁRABE": 1,
+        "ÁRABE POLLO (Bolsita 150g)": 1,
+        "QUESO ÁRABE (Fetas)": 3,
+        "HUEVO (Unidades)": 1
+      },
+      "Árabe Carne Normal": {
+        "PAN ÁRABE": 1,
+        "ÁRABE CARNE (Bolsita 150g)": 1,
+        "QUESO ÁRABE (Fetas)": 3
+      },
+      "Árabe Carne Completo": {
+        "PAN ÁRABE": 1,
+        "ÁRABE CARNE (Bolsita 150g)": 1,
+        "QUESO ÁRABE (Fetas)": 3,
+        "HUEVO (Unidades)": 1
+      },
+      "Arabetolo Mixto": {
+        "PAN ÁRABE": 1,
+        "ÁRABE MIXTO (75g/75g)": 1,
+        "QUESO ÁRABE (Fetas)": 3,
+        "JAMÓN (Fetas)": 2,
+        "PANCETA (Fetas)": 2,
+        "HUEVO (Unidades)": 1
+      },
+      "Arabetolo Pollo": {
+        "PAN ÁRABE": 1,
+        "ÁRABE POLLO (Bolsita 150g)": 1,
+        "QUESO ÁRABE (Fetas)": 3,
+        "JAMÓN (Fetas)": 2,
+        "PANCETA (Fetas)": 2,
+        "HUEVO (Unidades)": 1
+      },
+      "Arabetolo Carne": {
+        "PAN ÁRABE": 1,
+        "ÁRABE CARNE (Bolsita 150g)": 1,
+        "QUESO ÁRABE (Fetas)": 3,
+        "JAMÓN (Fetas)": 2,
+        "PANCETA (Fetas)": 2,
+        "HUEVO (Unidades)": 1
+      },
+      "Hamburguesa Completa": {
+        "PAN HAMBURGUESA": 1,
+        "HAMBURGUESA (Medallón 80g)": 1,
+        "HUEVO (Unidades)": 1,
+        "QUESO SÁNDWICH (Fetas)": 1
+      },
+      "Hamburguesa Doble": {
+        "PAN GOURMET": 1,
+        "HAMBURGUESA (Medallón 80g)": 2,
+        "QUESO SÁNDWICH (Fetas)": 2,
+        "HUEVO (Unidades)": 1
+      },
+      "Hamburguesa Cheddar": {
+        "PAN HAMBURGUESA": 1,
+        "HAMBURGUESA (Medallón 80g)": 1,
+        "CHEDDAR (Fetas)": 1,
+        "PANCETA (Fetas)": 1
+      },
+      "Hamburtolo": {
+        "PAN GOURMET": 1,
+        "HAMBURGUESA (Medallón 80g)": 2,
+        "CHEDDAR (Fetas)": 2,
+        "PANCETA (Fetas)": 1
+      },
+      "Papa Mediana": { "PAPAS FRITAS CHICA": 1 },
+      "Papa Familiar": { "PAPAS FRITAS GRANDE": 1 },
+      "Papa Cheddar": { "PAPAS FRITAS CHICA": 1, "CHEDDAR (Fetas)": 1 },
+      "Papa Katupiry": { "PAPAS FRITAS CHICA": 1 },
+      "Chivito": {
+        "PAN PARA CHIVITO": 1,
+        "LOMITO (Bolsita 80g)": 2,
+        "HUEVO (Unidades)": 2,
+        "QUESO SÁNDWICH (Fetas)": 2,
+        "JAMÓN TIPO TRIANGULO": 2,
+        "PANCETA (Fetas)": 3
+      },
+      "Chivitolo": {
+        "PAN PARA CHIVITO": 1,
+        "LOMITO (Bolsita 80g)": 2,
+        "HUEVO (Unidades)": 2,
+        "FILE DE POLLO": 1,
+        "QUESO SÁNDWICH (Fetas)": 2,
+        "JAMÓN TIPO TRIANGULO": 2,
+        "CHEDDAR (Fetas)": 2,
+        "PANCETA (Fetas)": 3
+      }
+    };
+
+    function recetaProducto(producto) {
+      if (!producto) return {};
+      if (recetasManualArmado[producto.nombre]) return recetasManualArmado[producto.nombre];
+      if (producto.categoria === "BEBIDA" && stockBebidas.includes(producto.nombre)) {
+        return { [producto.nombre]: 1 };
+      }
+      return {};
+    }
+
     const tabs = [
       ["hoja1", "1", "Hoja 1"],
       ["hoja2", "2", "Hoja 2"],
@@ -873,6 +1100,12 @@
     ];
     const root = document.getElementById("app");
     let activeTab = "menu";
+    let activeVentaCategoria = ventaCategorias[0] || "";
+    let cloudStatus = "Conectando...";
+    let cloudStorage = "";
+    let cloudReady = false;
+    let cloudSyncTimer = null;
+    const cloudPendingRecords = new Map();
 
     const tabDescriptions = {
       hoja1: "Inventario y conteo por producto.",
@@ -929,6 +1162,22 @@
         cantidad: 0
       }));
 
+    const consumoTipos = [
+      "Cena personal",
+      "Influencer / Cliente VIP",
+      "Administrador",
+      "Otro autorizado"
+    ];
+
+    const makeConsumosInternos = () =>
+      Array.from({ length: 6 }, () => ({
+        tipo: "Cena personal",
+        productoId: productos[0]?.id || "1",
+        cantidad: 0,
+        retiradoPor: "",
+        observacion: ""
+      }));
+
     const today = () => new Date().toISOString().slice(0, 10);
 
     const defaultCierre = () => ({
@@ -982,6 +1231,7 @@
       bebidas: makeRows(stockBebidas),
       ventas: productos.map((producto) => ({ productoId: producto.id, cantidad: 0 })),
       productosArmados: makeProductosArmados(),
+      consumosInternos: makeConsumosInternos(),
       pedidosYa: [
         { nro: "PY-001", productoId: "15", cantidad: 1 },
         { nro: "PY-002", productoId: "25", cantidad: 1 }
@@ -1114,6 +1364,7 @@
       next.bebidas = syncStockRows(next.bebidas, stockBebidas);
       next.ventas = syncVentas(next.ventas);
       next.productosArmados = syncProductosArmados(next.productosArmados);
+      next.consumosInternos = syncConsumosInternos(next.consumosInternos);
       next.cierres = { ...defaults.cierres, ...migrateLocalMap(next.cierres, defaultCierre) };
       locales.forEach((local) => {
         next.cierres[local] = { ...defaultCierre(), ...(next.cierres[local] || {}) };
@@ -1203,6 +1454,19 @@
       }));
     }
 
+    function syncConsumosInternos(savedRows) {
+      const rows = Array.isArray(savedRows) ? savedRows : [];
+      return makeConsumosInternos().map((row, index) => ({
+        ...row,
+        ...(rows[index] || {}),
+        tipo: consumoTipos.includes(rows[index]?.tipo) ? rows[index].tipo : row.tipo,
+        productoId: productById(rows[index]?.productoId || row.productoId).id,
+        cantidad: Number(rows[index]?.cantidad || 0),
+        retiradoPor: String(rows[index]?.retiradoPor || ""),
+        observacion: String(rows[index]?.observacion || "")
+      }));
+    }
+
     function dayKey(local, fecha) {
       return `${local || ""}__${fecha || today()}`;
     }
@@ -1243,6 +1507,7 @@
         bebidas: zeroRows(stockBebidas),
         ventas: productos.map((producto) => ({ productoId: producto.id, cantidad: 0 })),
         productosArmados: makeProductosArmados(),
+        consumosInternos: makeConsumosInternos(),
         pedidosYa: [],
         efectivo: 0,
         qr: 0,
@@ -1266,6 +1531,7 @@
         bebidas: syncStockRows(source.bebidas, stockBebidas),
         ventas: syncVentas(source.ventas),
         productosArmados: syncProductosArmados(source.productosArmados),
+        consumosInternos: syncConsumosInternos(source.consumosInternos),
         pedidosYa: Array.isArray(source.pedidosYa) ? source.pedidosYa : [],
         efectivo: Number(source.efectivo || 0),
         qr: Number(source.qr || 0),
@@ -1288,6 +1554,7 @@
       target.bebidas = syncStockRows(daily.bebidas, stockBebidas);
       target.ventas = syncVentas(daily.ventas);
       target.productosArmados = syncProductosArmados(daily.productosArmados);
+      target.consumosInternos = syncConsumosInternos(daily.consumosInternos);
       target.pedidosYa = Array.isArray(daily.pedidosYa) ? daily.pedidosYa : [];
       target.efectivo = Number(daily.efectivo || 0);
       target.qr = Number(daily.qr || 0);
@@ -1314,6 +1581,7 @@
 
     function changeDayContext(field, value) {
       persistCurrentDay();
+      queueCloudDay(state.local, state.fecha);
       state[field] = value;
       loadCurrentDay();
       saveState();
@@ -1323,6 +1591,145 @@
     function saveState() {
       persistCurrentDay();
       writeStoredState(state);
+      queueCloudStateForSync();
+    }
+
+    function setCloudStatus(status, storage = cloudStorage) {
+      cloudStatus = status;
+      cloudStorage = storage || cloudStorage;
+      const badge = root.querySelector("[data-cloud-status]");
+      if (badge) badge.textContent = cloudStatus;
+    }
+
+    function queueCloudRecord(record) {
+      if (!record?.key) return;
+      cloudPendingRecords.set(record.key, record);
+    }
+
+    function queueCloudDay(local, fecha) {
+      const key = dayKey(local, fecha);
+      const dayData = state.sucursalDias?.[key];
+      if (!dayData) return;
+      queueCloudRecord({
+        key: `day::${key}`,
+        type: "day",
+        data: { local, fecha, dayData }
+      });
+    }
+
+    function queueCloudReport(report) {
+      if (!report?.local || !report?.fecha) return;
+      queueCloudRecord({
+        key: `report::${reportKey(report.local, report.fecha)}`,
+        type: "report",
+        data: { local: report.local, fecha: report.fecha, report }
+      });
+    }
+
+    function queueCloudStateForSync() {
+      queueCloudRecord({
+        key: "config::security",
+        type: "config",
+        data: { seguridad: state.seguridad }
+      });
+      queueCloudDay(state.local, state.fecha);
+      const report = state.reportesPorFecha?.[reportKey(state.local, state.fecha)];
+      if (report) queueCloudReport(report);
+      scheduleCloudSync();
+    }
+
+    function queueAllCloudState() {
+      queueCloudRecord({
+        key: "config::security",
+        type: "config",
+        data: { seguridad: state.seguridad }
+      });
+      Object.entries(state.sucursalDias || {}).forEach(([key, dayData]) => {
+        const [local, ...dateParts] = key.split("__");
+        const fecha = dateParts.join("__");
+        queueCloudRecord({
+          key: `day::${key}`,
+          type: "day",
+          data: { local, fecha, dayData }
+        });
+      });
+      Object.values(state.reportesPorFecha || {}).forEach(queueCloudReport);
+    }
+
+    function scheduleCloudSync() {
+      if (!cloudReady || !cloudPendingRecords.size) return;
+      clearTimeout(cloudSyncTimer);
+      setCloudStatus("Cambios pendientes");
+      cloudSyncTimer = setTimeout(syncCloudNow, 800);
+    }
+
+    async function syncCloudNow() {
+      if (!cloudReady || !cloudPendingRecords.size) return;
+      const records = [...cloudPendingRecords.values()];
+      records.forEach((record) => cloudPendingRecords.delete(record.key));
+      setCloudStatus("Guardando online...");
+      try {
+        const response = await fetch("/api/sync", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ records })
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = await response.json();
+        const label = payload.storage === "postgres" ? "Online guardado" : "Servidor sin base permanente";
+        setCloudStatus(label, payload.storage || "");
+        if (cloudPendingRecords.size) scheduleCloudSync();
+      } catch {
+        records.forEach(queueCloudRecord);
+        setCloudStatus("Sin conexion - guardado local");
+      }
+    }
+
+    async function loadCloudState() {
+      setCloudStatus("Sincronizando...");
+      try {
+        const response = await fetch("/api/sync", { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = await response.json();
+        const records = Array.isArray(payload.records) ? payload.records : [];
+
+        records.forEach((record) => {
+          const data = record.data || {};
+          if (record.type === "config" && data.seguridad) {
+            state.seguridad = {
+              ...defaultSeguridad(),
+              ...data.seguridad,
+              sucursales: {
+                ...defaultSeguridad().sucursales,
+                ...(data.seguridad.sucursales || {})
+              }
+            };
+          }
+          if (record.type === "day" && data.local && data.fecha && data.dayData) {
+            state.sucursalDias[dayKey(normalizeLocalName(data.local), data.fecha)] = data.dayData;
+          }
+          if (record.type === "report" && data.report?.local && data.report?.fecha) {
+            const report = data.report;
+            state.reportesPorFecha[reportKey(report.local, report.fecha)] = report;
+            const current = state.reportesSucursales[report.local];
+            if (!current?.fecha || report.fecha >= current.fecha) {
+              state.reportesSucursales[report.local] = report;
+            }
+          }
+        });
+
+        loadCurrentDay();
+        writeStoredState(state);
+        cloudReady = true;
+        setCloudStatus(payload.storage === "postgres" ? "Online sincronizado" : "Servidor sin base permanente", payload.storage || "");
+        render();
+        queueAllCloudState();
+        scheduleCloudSync();
+      } catch {
+        cloudReady = false;
+        setCloudStatus("Sin conexion - datos locales");
+        render();
+      }
     }
 
     function toNumber(value) {
@@ -1476,6 +1883,7 @@
           </div>
           <div class="badges">
             <span class="badge">${isAdminAccess() ? "Modo administrador" : `Encargado: ${escapeHtml(state.local)}`}</span>
+            <span class="badge" data-cloud-status>${escapeHtml(cloudStatus)}</span>
             <span class="badge">Pedidos Ya separado</span>
             <button class="btn secondary" data-action="export-backup" type="button">Exportar respaldo</button>
             <button class="btn secondary" data-action="import-backup" type="button">Importar respaldo</button>
@@ -1557,6 +1965,7 @@
           </div>
           <div class="badges">
             <span class="badge">Acceso protegido</span>
+            <span class="badge" data-cloud-status>${escapeHtml(cloudStatus)}</span>
             <button class="btn secondary" data-action="import-backup" type="button">Importar respaldo</button>
             <input class="hidden" type="file" accept=".json,application/json" data-backup-input />
           </div>
@@ -1614,10 +2023,11 @@
     }
 
     function renderStock(kind, title, rows) {
+      const usoRecetas = usoInventarioPorReceta(state);
       return `
         <section class="panel">
           <div class="panel-body">
-            ${renderTitle(title, "Inicial + Entrada = Final. Final - Saldo = Salida.")}
+            ${renderTitle(title, "Salida real por conteo - salida justificada por receta = diferencia.")}
             <div class="table-wrap">
               <table>
                 <thead>
@@ -1626,7 +2036,9 @@
                     <th class="narrow">Inicial</th>
                     <th class="narrow">Entrada</th>
                     <th class="narrow">Final</th>
-                    <th class="narrow">Salida</th>
+                    <th class="narrow">Salida real</th>
+                    <th class="narrow">Justificada</th>
+                    <th class="narrow">Diferencia</th>
                     <th class="narrow">Saldo</th>
                   </tr>
                 </thead>
@@ -1634,13 +2046,17 @@
                   ${rows.map((row, index) => {
                     const final = Number(row.inicial || 0) + Number(row.entrada || 0);
                     const salida = final - Number(row.saldo || 0);
+                    const justificada = Number(usoRecetas[row.producto] || 0);
+                    const diferencia = salida - justificada;
                     return `
                       <tr>
                         <td data-label="Producto"><strong>${escapeHtml(row.producto)}</strong></td>
                         <td data-label="Inicial"><input type="number" data-stock="${kind}" data-index="${index}" data-field="inicial" value="${row.inicial}" /></td>
                         <td data-label="Entrada"><input type="number" data-stock="${kind}" data-index="${index}" data-field="entrada" value="${row.entrada}" /></td>
                         <td data-label="Final"><strong>${final}</strong></td>
-                        <td data-label="Salida"><strong>${salida}</strong></td>
+                        <td data-label="Salida real"><strong>${salida}</strong></td>
+                        <td data-label="Justificada"><strong>${justificada}</strong></td>
+                        <td data-label="Diferencia"><strong>${diferencia}</strong></td>
                         <td data-label="Saldo"><input type="number" data-stock="${kind}" data-index="${index}" data-field="saldo" value="${row.saldo}" /></td>
                       </tr>
                     `;
@@ -1695,18 +2111,134 @@
       `;
     }
 
+    function consumosInternosActivos(source = state) {
+      return syncConsumosInternos(source.consumosInternos).filter((row) => Number(row.cantidad || 0) > 0);
+    }
+
+    function totalConsumosInternos(source = state) {
+      return consumosInternosActivos(source).reduce((acc, row) => acc + Number(row.cantidad || 0), 0);
+    }
+
+    function renderConsumosInternos() {
+      const tipoOptions = (selected) => consumoTipos
+        .map((tipo) => `<option value="${escapeHtml(tipo)}" ${tipo === selected ? "selected" : ""}>${escapeHtml(tipo)}</option>`)
+        .join("");
+      return `
+        <div class="notice amber" style="margin-bottom: 14px;">
+          No suma dinero a la venta. La receta oficial del producto se agrega a la salida justificada del inventario.
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Motivo</th>
+                <th>Producto</th>
+                <th class="narrow">Cant.</th>
+                <th>Retirado por</th>
+                <th>Observacion</th>
+                <th>Receta</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${state.consumosInternos.map((row, index) => {
+                const producto = productById(row.productoId);
+                const tieneReceta = Object.keys(recetaProducto(producto)).length > 0;
+                return `
+                  <tr>
+                    <td data-label="Motivo"><select data-consumo="${index}" data-field="tipo">${tipoOptions(row.tipo)}</select></td>
+                    <td data-label="Producto"><select data-consumo="${index}" data-field="productoId">${productOptions(row.productoId)}</select></td>
+                    <td data-label="Cant."><input type="number" min="0" data-consumo="${index}" data-field="cantidad" value="${row.cantidad}" /></td>
+                    <td data-label="Retirado por"><input data-consumo="${index}" data-field="retiradoPor" value="${escapeHtml(row.retiradoPor)}" placeholder="Nombre" /></td>
+                    <td data-label="Observacion"><input data-consumo="${index}" data-field="observacion" value="${escapeHtml(row.observacion)}" placeholder="Autorizacion / detalle" /></td>
+                    <td data-label="Receta"><strong>${tieneReceta ? "Oficial" : "Pendiente"}</strong></td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="5">TOTAL CENAS / CORTESIAS</td>
+                <td>${totalConsumosInternos()}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      `;
+    }
+
+    function ventaCategoriaTotal(categoria) {
+      return productos.reduce((acc, producto, index) => {
+        if (producto.categoria !== categoria) return acc;
+        return acc + producto.precio * Number(state.ventas[index]?.cantidad || 0);
+      }, 0);
+    }
+
+    function renderHoja2Totals(data) {
+      return `
+        <div class="sales-kpis">
+          <div class="sales-kpi">
+            <p>Productos planilla</p>
+            <strong>${gs(data.totalVentasPlanilla)}</strong>
+          </div>
+          <div class="sales-kpi">
+            <p>Productos libres</p>
+            <strong>${gs(data.totalProductosArmados)}</strong>
+          </div>
+          <div class="sales-kpi total">
+            <p>Venta total Hoja 2</p>
+            <strong>${gs(data.totalVentasLocal)}</strong>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderVentaCategoryPicker() {
+      const categoriasPermitidas = [...ventaCategorias, ventaCategoriaLibres, ventaCategoriaConsumos];
+      if (!categoriasPermitidas.includes(activeVentaCategoria)) {
+        activeVentaCategoria = ventaCategorias[0] || "";
+      }
+      return `
+        <div class="category-picker">
+          ${ventaCategorias.map((categoria) => {
+            const active = categoria === activeVentaCategoria ? "active" : "";
+            return `
+              <button class="category-chip ${active}" data-sale-category="${escapeHtml(categoria)}" type="button">
+                ${escapeHtml(categoria)}
+                <span>${gs(ventaCategoriaTotal(categoria))}</span>
+              </button>
+            `;
+          }).join("")}
+          <button class="category-chip ${activeVentaCategoria === ventaCategoriaLibres ? "active" : ""}" data-sale-category="${ventaCategoriaLibres}" type="button">
+            PRODUCTOS LIBRES
+            <span>${gs(resumen().totalProductosArmados)}</span>
+          </button>
+          <button class="category-chip ${activeVentaCategoria === ventaCategoriaConsumos ? "active" : ""}" data-sale-category="${ventaCategoriaConsumos}" type="button">
+            CENAS / CORTESIAS
+            <span>${totalConsumosInternos()} unidades</span>
+          </button>
+        </div>
+      `;
+    }
+
     function renderHoja2() {
       const data = resumen();
+      const categoriasPermitidas = [...ventaCategorias, ventaCategoriaLibres, ventaCategoriaConsumos];
+      if (!categoriasPermitidas.includes(activeVentaCategoria)) {
+        activeVentaCategoria = ventaCategorias[0] || "";
+      }
+      const productosVisibles = productos
+        .map((producto, index) => ({ producto, index }))
+        .filter(({ producto }) => producto.categoria === activeVentaCategoria);
+      const totalCategoria = ventaCategoriaTotal(activeVentaCategoria);
       return `
         <section class="panel">
           <div class="panel-body">
             ${renderTitle("4. VENTA DETALLADA DEL DÍA", "Precio y subtotal se calculan automáticamente. Pedidos Ya se carga en su módulo separado.")}
-            <div class="kpi-grid" style="margin-bottom: 14px;">
-              ${renderKpi("P", "Productos planilla", gs(data.totalVentasPlanilla))}
-              ${renderKpi("L", "Productos libres", gs(data.totalProductosArmados))}
-              ${renderKpi("$", "Venta total Hoja 2", gs(data.totalVentasLocal))}
-            </div>
-            <div class="table-wrap">
+            ${renderHoja2Totals(data)}
+            ${renderVentaCategoryPicker()}
+            ${activeVentaCategoria === ventaCategoriaLibres ? renderProductosArmados() : ""}
+            ${activeVentaCategoria === ventaCategoriaConsumos ? renderConsumosInternos() : ""}
+            ${ventaCategorias.includes(activeVentaCategoria) ? `<div class="table-wrap">
               <table>
                 <thead>
                   <tr>
@@ -1718,7 +2250,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  ${productos.map((producto, index) => {
+                  ${productosVisibles.map(({ producto, index }) => {
                     const venta = state.ventas[index] || { productoId: producto.id, cantidad: 0 };
                     const subtotal = producto.precio * Number(venta.cantidad || 0);
                     return `
@@ -1734,25 +2266,12 @@
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colspan="4">VENTA PRODUCTOS DE PLANILLA</td>
-                    <td>${gs(data.totalVentasPlanilla)}</td>
-                  </tr>
-                  <tr>
-                    <td colspan="4">PRODUCTOS ARMADOS POR CLIENTE</td>
-                    <td>${gs(data.totalProductosArmados)}</td>
-                  </tr>
-                  <tr>
-                    <td colspan="4">VENTA TOTAL PLANILLA</td>
-                    <td>${gs(data.totalVentasLocal)}</td>
-                  </tr>
-                  <tr>
-                    <td colspan="4">VENTA TOTAL DEL DIA</td>
-                    <td>${gs(data.totalVentaDia)}</td>
+                    <td colspan="4">TOTAL ${escapeHtml(activeVentaCategoria)}</td>
+                    <td>${gs(totalCategoria)}</td>
                   </tr>
                 </tfoot>
               </table>
-            </div>
-            ${renderProductosArmados()}
+            </div>` : ""}
           </div>
         </section>
       `;
@@ -2284,6 +2803,7 @@
       const inventario = inventarioResumen();
       const egresosActivos = state.egresos.filter((egreso) => Number(egreso.monto || 0) || String(egreso.nombre || "").trim());
       const armados = productosArmadosActivos();
+      const consumos = consumosInternosActivos();
       const diferencia = Number(data.diferenciaVentaEfectivo || 0);
       const statusTone = diferencia === 0 ? "ok" : "alert";
       return {
@@ -2338,6 +2858,17 @@
             rows: egresosActivos.length
               ? egresosActivos.map((egreso) => [`${egreso.concepto}${egreso.nombre ? ` - ${egreso.nombre}` : ""}`, gs(egreso.monto)])
               : [["Sin gastos cargados", gs(0)]]
+          },
+          {
+            title: "Cenas y cortesias sin cobro",
+            rows: consumos.length
+              ? consumos.map((row) => {
+                  const producto = productById(row.productoId);
+                  const responsable = row.retiradoPor || "Sin nombre";
+                  return [`${row.tipo}: ${producto.nombre}`, `${row.cantidad} un. - ${responsable}`];
+                })
+              : [["Sin consumos internos cargados", "0"]],
+            note: "No suma a la venta. Descuenta inventario cuando el producto tiene receta oficial."
           }
         ],
         armados: armados.map((row, index) => ({
@@ -2404,6 +2935,17 @@
         });
       }
 
+      const consumos = consumosInternosActivos();
+      lines.push("", "CENAS Y CORTESIAS SIN COBRO");
+      if (!consumos.length) {
+        lines.push("Sin consumos internos cargados.");
+      } else {
+        consumos.forEach((row, index) => {
+          const producto = productById(row.productoId);
+          lines.push(`${index + 1}. ${row.tipo} | ${producto.nombre} | Cant. ${row.cantidad} | Retira: ${row.retiradoPor || "-"} | ${row.observacion || "-"}`);
+        });
+      }
+
       lines.push("", ...inventoryPdfPlanillaLines());
 
       lines.push("", "OBSERVACION");
@@ -2420,7 +2962,24 @@
       });
     }
 
+    function usoInventarioPorReceta(source = state) {
+      const uso = {};
+      const agregarProducto = (productoId, cantidad) => {
+        const qty = Number(cantidad || 0);
+        if (qty <= 0) return;
+        const producto = productById(productoId);
+        Object.entries(recetaProducto(producto)).forEach(([insumo, unidades]) => {
+          uso[insumo] = Number(uso[insumo] || 0) + Number(unidades || 0) * qty;
+        });
+      };
+
+      syncVentas(source.ventas).forEach((venta) => agregarProducto(venta.productoId, venta.cantidad));
+      syncConsumosInternos(source.consumosInternos).forEach((row) => agregarProducto(row.productoId, row.cantidad));
+      return uso;
+    }
+
     function inventoryRows() {
+      const usoRecetas = usoInventarioPorReceta(state);
       return stockGroups().flatMap(([grupo, rows]) =>
         rows.map((row) => {
           const inicial = Number(row.inicial || 0);
@@ -2428,7 +2987,9 @@
           const final = inicial + entrada;
           const saldo = Number(row.saldo || 0);
           const salida = final - saldo;
-          return { grupo, producto: row.producto, inicial, entrada, final, salida, saldo };
+          const salidaJustificada = Number(usoRecetas[row.producto] || 0);
+          const diferencia = salida - salidaJustificada;
+          return { grupo, producto: row.producto, inicial, entrada, final, salida, salidaJustificada, diferencia, saldo };
         })
       );
     }
@@ -2436,25 +2997,27 @@
     function inventarioResumen() {
       return inventoryRows().reduce(
         (acc, row) => {
-          if (row.salida > 0) acc.faltante += row.salida;
-          if (row.salida < 0) acc.sobrante += Math.abs(row.salida);
-          acc.diferencia += row.salida;
+          if (row.diferencia > 0) acc.faltante += row.diferencia;
+          if (row.diferencia < 0) acc.sobrante += Math.abs(row.diferencia);
+          acc.diferencia += row.diferencia;
           return acc;
         },
         { faltante: 0, sobrante: 0, diferencia: 0 }
       );
     }
 
-    function inventarioResumenFromGroups(groups) {
+    function inventarioResumenFromGroups(groups, source = {}) {
+      const usoRecetas = usoInventarioPorReceta(source);
       return groups.flatMap(([, rows]) => rows || []).reduce(
         (acc, row) => {
           const inicial = Number(row.inicial || 0);
           const entrada = Number(row.entrada || 0);
           const saldo = Number(row.saldo || 0);
           const salida = inicial + entrada - saldo;
-          if (salida > 0) acc.faltante += salida;
-          if (salida < 0) acc.sobrante += Math.abs(salida);
-          acc.diferencia += salida;
+          const diferencia = salida - Number(usoRecetas[row.producto] || 0);
+          if (diferencia > 0) acc.faltante += diferencia;
+          if (diferencia < 0) acc.sobrante += Math.abs(diferencia);
+          acc.diferencia += diferencia;
           return acc;
         },
         { faltante: 0, sobrante: 0, diferencia: 0 }
@@ -2594,7 +3157,7 @@
       const daily = dayData || zeroDailyData(fecha);
       const data = resumenDailyData(daily);
       const egresos = Array.isArray(daily.egresos) ? daily.egresos : zeroEgresos();
-      const inventario = inventarioResumenFromGroups(dailyStockGroups(daily));
+      const inventario = inventarioResumenFromGroups(dailyStockGroups(daily), daily);
       const pagosPersonal = pagosPersonalFromEgresos(egresos);
       const otrosEgresos = otrosEgresosFromEgresos(egresos);
       const gananciaBruta50 = data.totalVentaDia * 0.5;
@@ -2863,30 +3426,27 @@
     function inventoryPdfPlanillaLines() {
       const lines = ["INVENTARIO FINAL - PLANILLA"];
       const header = [
-        fixedPdfCell("Producto", 34),
-        fixedPdfCell("Inicial", 7, "right"),
+        fixedPdfCell("Producto", 27),
+        fixedPdfCell("Inicial", 6, "right"),
         fixedPdfCell("Entrada", 7, "right"),
-        fixedPdfCell("Final", 7, "right"),
-        fixedPdfCell("Salida", 7, "right"),
-        fixedPdfCell("Saldo", 7, "right")
+        fixedPdfCell("Real", 6, "right"),
+        fixedPdfCell("Receta", 7, "right"),
+        fixedPdfCell("Dif.", 6, "right"),
+        fixedPdfCell("Saldo", 6, "right")
       ].join(" ");
       const separator = "-".repeat(header.length);
 
       stockGroups().forEach(([grupo, rows]) => {
         lines.push("", `GRUPO: ${grupo.toUpperCase()}`, header, separator);
-        rows.forEach((row) => {
-          const inicial = Number(row.inicial || 0);
-          const entrada = Number(row.entrada || 0);
-          const final = inicial + entrada;
-          const saldo = Number(row.saldo || 0);
-          const salida = final - saldo;
+        inventoryRows().filter((row) => row.grupo === grupo).forEach((row) => {
           lines.push([
-            fixedPdfCell(row.producto, 34),
-            fixedPdfCell(inicial, 7, "right"),
-            fixedPdfCell(entrada, 7, "right"),
-            fixedPdfCell(final, 7, "right"),
-            fixedPdfCell(salida, 7, "right"),
-            fixedPdfCell(saldo, 7, "right")
+            fixedPdfCell(row.producto, 27),
+            fixedPdfCell(row.inicial, 6, "right"),
+            fixedPdfCell(row.entrada, 7, "right"),
+            fixedPdfCell(row.salida, 6, "right"),
+            fixedPdfCell(row.salidaJustificada, 7, "right"),
+            fixedPdfCell(row.diferencia, 6, "right"),
+            fixedPdfCell(row.saldo, 6, "right")
           ].join(" "));
         });
       });
@@ -2902,7 +3462,7 @@
     function downloadInventoryCsv() {
       const cierre = currentCierre();
       const rows = [
-        ["Sucursal", "Fecha cierre", "Grupo", "Producto", "Inicial", "Entrada", "Final", "Salida", "Saldo final"],
+        ["Sucursal", "Fecha cierre", "Grupo", "Producto", "Inicial", "Entrada", "Final", "Salida real", "Salida receta", "Diferencia", "Saldo final"],
         ...inventoryRows().map((row) => [
           state.local,
           cierre.fecha || state.fecha,
@@ -2912,6 +3472,8 @@
           row.entrada,
           row.final,
           row.salida,
+          row.salidaJustificada,
+          row.diferencia,
           row.saldo
         ])
       ];
@@ -3161,7 +3723,7 @@
             ["Sobrante total", String(report.inventorySummary.sobrante || 0)],
             ["Diferencia neta", String(report.inventorySummary.diferencia || 0)]
           ],
-          note: "Inventario basado en Inicial + Entrada - Saldo final = Salida."
+          note: "Diferencia = salida real por conteo - salida justificada por ventas y cenas autorizadas."
         });
 
         ensureSpace(70);
@@ -3177,18 +3739,22 @@
             y += 26;
             rect(margin, y, pageWidth - margin * 2, 20, colors.soft, colors.line);
             text(margin + 8, y + 6, "Producto", { font: "F2", size: 8, color: colors.muted });
-            text(306, y + 6, "Inicial", { font: "F2", size: 8, color: colors.muted });
-            text(360, y + 6, "Entrada", { font: "F2", size: 8, color: colors.muted });
-            text(414, y + 6, "Salida", { font: "F2", size: 8, color: colors.muted });
-            text(468, y + 6, "Saldo", { font: "F2", size: 8, color: colors.muted });
+            text(270, y + 6, "Inicial", { font: "F2", size: 7, color: colors.muted });
+            text(312, y + 6, "Entrada", { font: "F2", size: 7, color: colors.muted });
+            text(358, y + 6, "Real", { font: "F2", size: 7, color: colors.muted });
+            text(400, y + 6, "Receta", { font: "F2", size: 7, color: colors.muted });
+            text(448, y + 6, "Dif.", { font: "F2", size: 7, color: colors.muted });
+            text(490, y + 6, "Saldo", { font: "F2", size: 7, color: colors.muted });
             y += 22;
           }
           ensureSpace(24);
-          text(margin + 8, y + 5, shortText(row.producto, 42), { size: 8, color: colors.ink });
-          text(318, y + 5, String(row.inicial), { size: 8, color: colors.ink });
-          text(374, y + 5, String(row.entrada), { size: 8, color: colors.ink });
-          text(428, y + 5, String(row.salida), { font: "F2", size: 8, color: row.salida ? colors.red : colors.ink });
-          text(482, y + 5, String(row.saldo), { font: "F2", size: 8, color: colors.ink });
+          text(margin + 8, y + 5, shortText(row.producto, 34), { size: 8, color: colors.ink });
+          text(278, y + 5, String(row.inicial), { size: 7, color: colors.ink });
+          text(322, y + 5, String(row.entrada), { size: 7, color: colors.ink });
+          text(366, y + 5, String(row.salida), { size: 7, color: colors.ink });
+          text(410, y + 5, String(row.salidaJustificada || 0), { size: 7, color: colors.ink });
+          text(454, y + 5, String(row.diferencia || 0), { font: "F2", size: 7, color: row.diferencia ? colors.red : colors.ink });
+          text(498, y + 5, String(row.saldo), { font: "F2", size: 7, color: colors.ink });
           line(margin, y + 19, pageWidth - margin, y + 19);
           y += 20;
         });
@@ -3418,6 +3984,13 @@
         return;
       }
 
+      const saleCategory = event.target.closest("[data-sale-category]");
+      if (saleCategory) {
+        activeVentaCategoria = saleCategory.dataset.saleCategory;
+        render();
+        return;
+      }
+
       const addPy = event.target.closest("[data-action='add-py']");
       if (addPy) {
         state.pedidosYa.push({
@@ -3528,6 +4101,14 @@
         return;
       }
 
+      if (target.dataset.consumo !== undefined) {
+        const row = state.consumosInternos[Number(target.dataset.consumo)];
+        row[field] = field === "cantidad" ? toNumber(target.value) : target.value;
+        saveState();
+        render();
+        return;
+      }
+
       if (target.dataset.py) {
         const row = state.pedidosYa[Number(target.dataset.py)];
         row[field] = field === "cantidad" ? toNumber(target.value) : target.value;
@@ -3565,6 +4146,7 @@
     }
 
     render();
+    loadCloudState();
   </script>
 </body>
 </html>
