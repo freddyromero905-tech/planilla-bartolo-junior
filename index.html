@@ -1106,6 +1106,9 @@
     let cloudReady = false;
     let cloudSyncTimer = null;
     const cloudPendingRecords = new Map();
+    let adminFechaDesde = "";
+    let adminFechaHasta = "";
+    let adminPeriodo = "dia";
 
     const tabDescriptions = {
       hoja1: "Inventario y conteo por producto.",
@@ -1291,6 +1294,8 @@
     }
 
     let state = loadState();
+    adminFechaDesde = state.fecha || today();
+    adminFechaHasta = state.fecha || today();
 
     function unwrapStoredState(payload) {
       if (!payload || typeof payload !== "object") return null;
@@ -2595,24 +2600,44 @@
     }
 
     function renderAdmin() {
-      const data = resumen();
-      const cierreActual = cierreCalculos();
-      const reports = adminReportRows();
-      const activeReports = activeAdminReports();
-      const totals = adminTotals(reports);
-      const best = activeReports.reduce((winner, row) => (!winner || row.resultadoFinal > winner.resultadoFinal ? row : winner), null);
-      const worst = activeReports.reduce((loser, row) => (!loser || row.resultadoFinal < loser.resultadoFinal ? row : loser), null);
+      const periodLabel = adminRangeLabel();
+      const activeReports = activeAdminReportsForRange();
+      const branchReports = aggregateAdminReportsByLocal(activeReports);
+      const totals = adminTotals(activeReports);
+      const best = branchReports.reduce((winner, row) => (!winner || row.resultadoFinal > winner.resultadoFinal ? row : winner), null);
+      const worst = branchReports.reduce((loser, row) => (!loser || row.resultadoFinal < loser.resultadoFinal ? row : loser), null);
       const action = `
         <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
           <button class="btn secondary" data-action="save-admin-summary" type="button"><span>OK</span><span>Guardar resumen actual</span></button>
-          <button class="btn" data-action="admin-pdf" type="button"><span>PDF</span><span>Informe Admin</span></button>
+          <button class="btn" data-action="admin-pdf" type="button"><span>PDF</span><span>Informe del periodo</span></button>
         </div>
       `;
       return `
         <section class="panel">
           <div class="panel-body">
+            ${renderTitle("Periodo del informe", `Consulta actual: ${periodLabel}. La fecha operativa de las sucursales no cambia.`)}
+            <div class="inline-grid">
+              <label>
+                <span>Desde</span>
+                <input type="date" data-admin-range="desde" value="${escapeHtml(adminFechaDesde)}" />
+              </label>
+              <label>
+                <span>Hasta</span>
+                <input type="date" data-admin-range="hasta" value="${escapeHtml(adminFechaHasta)}" />
+              </label>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: end;">
+                <button class="btn ${adminPeriodo === "dia" ? "" : "secondary"}" data-admin-preset="dia" type="button">Dia</button>
+                <button class="btn ${adminPeriodo === "semana" ? "" : "secondary"}" data-admin-preset="semana" type="button">Semana</button>
+                <button class="btn ${adminPeriodo === "mes" ? "" : "secondary"}" data-admin-preset="mes" type="button">Mes</button>
+                <button class="btn ${adminPeriodo === "trimestre" ? "" : "secondary"}" data-admin-preset="trimestre" type="button">Trimestre</button>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-body">
             <div class="kpi-grid">
-              ${renderKpi("$", "Venta total Bartolo", gs(totals.ventaTotal))}
+              ${renderKpi("$", "Venta total periodo", gs(totals.ventaTotal))}
               ${renderKpi("EF", "Venta efectivo", gs(totals.ventaEfectivoPlanilla))}
               ${renderKpi("CAJA", "Total efectivo en caja", gs(totals.totalEfectivoCaja))}
               ${renderKpi("!", "QR / electronico", gs(totals.qrAcreditado))}
@@ -2623,7 +2648,7 @@
         ${renderSeguridadAdmin()}
         <section class="panel">
           <div class="panel-body">
-            ${renderTitle("Efectivo a entregar Bartolo por dia", `Sumatoria de todas las sucursales para la fecha ${state.fecha}.`)}
+            ${renderTitle("Efectivo a entregar Bartolo", `Sumatoria de todas las sucursales para el periodo ${periodLabel}.`)}
             <div class="two-col">
               <div class="summary-box">
                 <h3>Total general</h3>
@@ -2646,12 +2671,13 @@
         </section>
         <section class="panel">
           <div class="panel-body">
-            ${renderTitle("Informe administrador por dia", `Comparativo de sucursales solo para la fecha seleccionada: ${state.fecha}. Ganancia bruta estimada: 50% de venta total antes de pagar personal.`, action)}
+            ${renderTitle("Informe administrador por periodo", `Comparativo del ${periodLabel}. Ganancia bruta estimada: 50% de venta total antes de pagar personal.`, action)}
             <div class="two-col">
               <div class="summary-box">
                 <h3>Mayor ganancia</h3>
                 ${best ? `
                   ${renderSummaryRow(best.local, best.resultadoFinal)}
+                  <div class="summary-row"><span>Dias con datos</span><b>${best.diasConDatos}</b></div>
                   ${renderSummaryRow("Venta total", best.ventaTotal)}
                   ${renderSummaryRow("Ganancia 50% antes personal", best.gananciaBruta50)}
                 ` : `<div class="notice amber">Sin cierres guardados todavia.</div>`}
@@ -2660,12 +2686,49 @@
                 <h3>Mayor perdida / riesgo</h3>
                 ${worst ? `
                   ${renderSummaryRow(worst.local, worst.resultadoFinal)}
+                  <div class="summary-row"><span>Dias con datos</span><b>${worst.diasConDatos}</b></div>
                   ${renderSummaryRow("Pagos personal", -worst.pagosPersonal)}
                   ${renderSummaryRow("Diferencia caja", worst.diferenciaCaja)}
                 ` : `<div class="notice amber">Sin cierres guardados todavia.</div>`}
               </div>
             </div>
             <div class="table-wrap" style="margin-top: 14px;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Sucursal</th>
+                    <th>Dias con datos</th>
+                    <th>Venta total</th>
+                    <th>Efectivo a entregar</th>
+                    <th>QR</th>
+                    <th>PedidosYa</th>
+                    <th>Personal</th>
+                    <th>Resultado</th>
+                    <th>Caja dif.</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${branchReports.length ? branchReports.map((row) => `
+                    <tr>
+                      <td data-label="Sucursal"><strong>${escapeHtml(row.local)}</strong></td>
+                      <td data-label="Dias con datos">${row.diasConDatos}</td>
+                      <td data-label="Venta total">${gs(row.ventaTotal)}</td>
+                      <td data-label="Efectivo a entregar"><strong>${gs(row.efectivoAEntregar)}</strong></td>
+                      <td data-label="QR">${gs(row.qrAcreditado)}</td>
+                      <td data-label="PedidosYa">${gs(row.pedidosYaBruto)}</td>
+                      <td data-label="Personal">${gs(row.pagosPersonal)}</td>
+                      <td data-label="Resultado"><strong>${gs(row.resultadoFinal)}</strong></td>
+                      <td data-label="Caja dif.">${gs(row.diferenciaCaja)}</td>
+                      <td data-label="Estado">${escapeHtml(row.estado)}</td>
+                    </tr>
+                  `).join("") : `<tr><td colspan="10">Sin datos para el periodo seleccionado.</td></tr>`}
+                </tbody>
+              </table>
+            </div>
+
+            <h3 style="margin: 18px 0 10px;">Detalle diario del periodo</h3>
+            <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
@@ -2689,7 +2752,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  ${reports.map((row) => `
+                  ${activeReports.length ? activeReports.map((row) => `
                     <tr>
                       <td data-label="Sucursal"><strong>${escapeHtml(row.local)}</strong></td>
                       <td data-label="Fecha">${escapeHtml(row.fecha || "Sin cierre")}</td>
@@ -2709,12 +2772,12 @@
                       <td data-label="Inv. dif."><strong>${Number(row.inventarioDiferencia || 0)}</strong></td>
                       <td data-label="Estado">${escapeHtml(row.estado)}</td>
                     </tr>
-                  `).join("")}
+                  `).join("") : `<tr><td colspan="17">Sin cierres o cargas para el periodo seleccionado.</td></tr>`}
                 </tbody>
               </table>
             </div>
             <div class="notice amber" style="margin-top: 14px;">
-              Para comparar el dia, cada sucursal debe guardar o cerrar su resumen en la misma fecha seleccionada arriba. No se mezclan cierres de otros dias.
+              El informe usa solamente fechas entre ${escapeHtml(adminFechaDesde)} y ${escapeHtml(adminFechaHasta)}. Cada sucursal debe guardar o cerrar su resumen para que aparezca en el periodo.
             </div>
           </div>
         </section>
@@ -3217,6 +3280,88 @@
       return adminReportRows(fecha).filter((row) => row.guardadoEn && row.fecha === fecha);
     }
 
+    function parseIsoDate(value) {
+      const [year, month, day] = String(value || today()).split("-").map(Number);
+      return new Date(year || 2000, Math.max(0, (month || 1) - 1), day || 1, 12, 0, 0);
+    }
+
+    function isoDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function adminRangeDates() {
+      const from = parseIsoDate(adminFechaDesde || state.fecha);
+      const to = parseIsoDate(adminFechaHasta || adminFechaDesde || state.fecha);
+      const start = from <= to ? from : to;
+      const end = from <= to ? to : from;
+      const dates = [];
+      const cursor = new Date(start);
+      while (cursor <= end && dates.length < 1100) {
+        dates.push(isoDate(cursor));
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      return dates;
+    }
+
+    function adminRangeLabel() {
+      const dates = adminRangeDates();
+      if (!dates.length) return state.fecha;
+      return dates.length === 1 ? dates[0] : `${dates[0]} al ${dates[dates.length - 1]}`;
+    }
+
+    function setAdminRangePreset(preset) {
+      const reference = parseIsoDate(state.fecha || today());
+      let from = new Date(reference);
+      let to = new Date(reference);
+
+      if (preset === "semana") {
+        const weekday = reference.getDay() || 7;
+        from.setDate(reference.getDate() - weekday + 1);
+        to = new Date(from);
+        to.setDate(from.getDate() + 6);
+      }
+      if (preset === "mes") {
+        from = new Date(reference.getFullYear(), reference.getMonth(), 1, 12);
+        to = new Date(reference.getFullYear(), reference.getMonth() + 1, 0, 12);
+      }
+      if (preset === "trimestre") {
+        const firstMonth = Math.floor(reference.getMonth() / 3) * 3;
+        from = new Date(reference.getFullYear(), firstMonth, 1, 12);
+        to = new Date(reference.getFullYear(), firstMonth + 3, 0, 12);
+      }
+
+      adminPeriodo = preset;
+      adminFechaDesde = isoDate(from);
+      adminFechaHasta = isoDate(to);
+    }
+
+    function adminReportRowsForRange() {
+      return adminRangeDates().flatMap((fecha) => adminReportRows(fecha));
+    }
+
+    function activeAdminReportsForRange() {
+      return adminReportRowsForRange().filter((row) => row.guardadoEn && row.estado !== "Sin cierre");
+    }
+
+    function aggregateAdminReportsByLocal(reports) {
+      return locales.map((local) => {
+        const rows = reports.filter((row) => row.local === local);
+        const totals = adminTotals(rows);
+        return {
+          ...defaultReporteSucursal(local),
+          ...totals,
+          local,
+          fecha: adminRangeLabel(),
+          diasConDatos: rows.length,
+          guardadoEn: rows.length ? "Periodo" : "",
+          estado: rows.length ? (totals.resultadoFinal >= 0 ? "Ganancia" : "Perdida") : "Sin datos"
+        };
+      }).filter((row) => row.diasConDatos > 0);
+    }
+
     function adminTotals(reports) {
       return reports.reduce(
         (acc, row) => {
@@ -3266,26 +3411,27 @@
     }
 
     function downloadAdminPdf() {
-      downloadPdf(`informe-admin-bartolo-${state.fecha || today()}.pdf`, buildAdminPdfReport());
+      downloadPdf(`informe-admin-bartolo-${adminFechaDesde}-a-${adminFechaHasta}.pdf`, buildAdminPdfReport());
     }
 
     function buildAdminPdfReport() {
-      const fecha = state.fecha || today();
-      const reports = adminReportRows(fecha);
-      const activeReports = activeAdminReports(fecha);
-      const totals = adminTotals(reports);
-      const best = activeReports.reduce((winner, row) => (!winner || row.resultadoFinal > winner.resultadoFinal ? row : winner), null);
-      const worst = activeReports.reduce((loser, row) => (!loser || row.resultadoFinal < loser.resultadoFinal ? row : loser), null);
+      const periodLabel = adminRangeLabel();
+      const activeReports = activeAdminReportsForRange();
+      const branchReports = aggregateAdminReportsByLocal(activeReports);
+      const totals = adminTotals(activeReports);
+      const best = branchReports.reduce((winner, row) => (!winner || row.resultadoFinal > winner.resultadoFinal ? row : winner), null);
+      const worst = branchReports.reduce((loser, row) => (!loser || row.resultadoFinal < loser.resultadoFinal ? row : loser), null);
       const diffTone = totals.diferenciaMedios === 0 ? "ok" : "alert";
       return {
         type: "visual-admin",
         title: "BARTOLO JUNIOR",
         subtitle: "Informe administrador",
         meta: [
-          `Fecha comparada: ${fecha}`,
+          `Periodo: ${periodLabel}`,
           `Fecha informe: ${new Date().toLocaleString("es-PY")}`,
           `Sucursales: ${locales.length}`,
-          `Con datos: ${activeReports.length}`
+          `Dias incluidos: ${adminRangeDates().length}`,
+          `Registros con datos: ${activeReports.length}`
         ],
         status: {
           label: "Efectivo a entregar Bartolo",
@@ -3305,14 +3451,14 @@
         ],
         sections: [
           {
-            title: "Resumen Bartolo por dia",
+            title: "Resumen Bartolo del periodo",
             rows: [
               ["Venta total Bartolo", gs(totals.ventaTotal)],
               ["Venta efectivo segun planilla", gs(totals.ventaEfectivoPlanilla)],
               ["(-) Egresos Hoja 3", `-${gs(totals.totalEgresos)}`],
               ["(+) Caja chica", gs(totals.cajaChica)],
               ["Efectivo a entregar", gs(totals.efectivoAEntregar)],
-              ["Total justificado del dia", gs(totals.totalPorMedios)],
+              ["Total justificado", gs(totals.totalPorMedios)],
               ["Diferencia medios", diferenciaCajaLabel(totals.diferenciaMedios)],
               ["Ganancia bruta 50%", gs(totals.gananciaBruta50)],
               ["Pagos personal", gs(totals.pagosPersonal)],
@@ -3321,18 +3467,18 @@
             note: "Efectivo a entregar = venta efectivo segun planilla - egresos Hoja 3 + caja chica. Venta total del dia se justifica con efectivo contado - caja chica + egresos + QR/electronico + PedidosYa."
           },
           {
-            title: "Ranking del dia",
+            title: "Ranking del periodo",
             rows: [
-              ["Mayor ganancia", best ? `${best.local} | ${gs(best.resultadoFinal)}` : "Sin datos"],
-              ["Mayor perdida / riesgo", worst ? `${worst.local} | ${gs(worst.resultadoFinal)} | Caja ${diferenciaCajaLabel(worst.diferenciaCaja)}` : "Sin datos"],
+              ["Mayor ganancia", best ? `${best.local} | ${best.diasConDatos} dias | ${gs(best.resultadoFinal)}` : "Sin datos"],
+              ["Mayor perdida / riesgo", worst ? `${worst.local} | ${worst.diasConDatos} dias | ${gs(worst.resultadoFinal)}` : "Sin datos"],
               ["Inventario faltante total", String(totals.inventarioFaltante)],
               ["Inventario sobrante total", String(totals.inventarioSobrante)]
             ]
           }
         ],
-        detailTitle: "Detalle por sucursal",
-        detailRows: reports.map((row) => ({
-          local: row.local,
+        detailTitle: "Detalle diario por sucursal",
+        detailRows: activeReports.map((row) => ({
+          local: `${row.local} ${row.fecha}`,
           venta: gs(row.ventaTotal),
           efectivo: gs(row.totalEfectivoCaja),
           qr: gs(row.qrAcreditado),
@@ -3343,46 +3489,24 @@
           estado: row.estado || "Sin cierre"
         })),
         footer: [
-          "Criterio: venta total del dia = efectivo + QR/electronico + PedidosYa.",
+          `Periodo consultado: ${periodLabel}.`,
           "Ganancia bruta estimada = venta total x 50% antes de pagos de personal."
         ]
       };
     }
 
     function buildAdminPdfLines() {
-      const fecha = state.fecha || today();
-      const reports = adminReportRows(fecha);
-      const activeReports = activeAdminReports(fecha);
-      const best = activeReports.reduce((winner, row) => (!winner || row.resultadoFinal > winner.resultadoFinal ? row : winner), null);
-      const worst = activeReports.reduce((loser, row) => (!loser || row.resultadoFinal < loser.resultadoFinal ? row : loser), null);
-      const totals = reports.reduce(
-        (acc, row) => {
-          acc.ventaTotal += Number(row.ventaTotal || 0);
-          acc.gananciaBruta50 += Number(row.gananciaBruta50 || 0);
-          acc.pagosPersonal += Number(row.pagosPersonal || 0);
-          acc.resultadoFinal += Number(row.resultadoFinal || 0);
-          acc.diferenciaCaja += Number(row.diferenciaCaja || 0);
-          acc.inventarioFaltante += Number(row.inventarioFaltante || 0);
-          acc.inventarioSobrante += Number(row.inventarioSobrante || 0);
-          acc.inventarioDiferencia += Number(row.inventarioDiferencia || 0);
-          return acc;
-        },
-        {
-          ventaTotal: 0,
-          gananciaBruta50: 0,
-          pagosPersonal: 0,
-          resultadoFinal: 0,
-          diferenciaCaja: 0,
-          inventarioFaltante: 0,
-          inventarioSobrante: 0,
-          inventarioDiferencia: 0
-        }
-      );
+      const periodLabel = adminRangeLabel();
+      const reports = activeAdminReportsForRange();
+      const branchReports = aggregateAdminReportsByLocal(reports);
+      const best = branchReports.reduce((winner, row) => (!winner || row.resultadoFinal > winner.resultadoFinal ? row : winner), null);
+      const worst = branchReports.reduce((loser, row) => (!loser || row.resultadoFinal < loser.resultadoFinal ? row : loser), null);
+      const totals = adminTotals(reports);
 
       const lines = [
         "BARTOLO JUNIOR - INFORME ADMINISTRADOR",
         `Fecha informe: ${new Date().toLocaleString("es-PY")}`,
-        `Fecha comparada: ${fecha}`,
+        `Periodo comparado: ${periodLabel}`,
         "",
         "RESUMEN GENERAL",
         `Venta total: ${gs(totals.ventaTotal)}`,
@@ -3398,7 +3522,7 @@
         best ? `Mayor ganancia: ${best.local} | Resultado ${gs(best.resultadoFinal)} | Venta ${gs(best.ventaTotal)}` : "Mayor ganancia: sin cierres guardados",
         worst ? `Mayor perdida/riesgo: ${worst.local} | Resultado ${gs(worst.resultadoFinal)} | Caja dif. ${gs(worst.diferenciaCaja)}` : "Mayor perdida/riesgo: sin cierres guardados",
         "",
-        "DETALLE POR SUCURSAL"
+        "DETALLE DIARIO POR SUCURSAL"
       ];
 
       reports.forEach((row) => {
@@ -3984,6 +4108,13 @@
         return;
       }
 
+      const adminPreset = event.target.closest("[data-admin-preset]");
+      if (adminPreset) {
+        setAdminRangePreset(adminPreset.dataset.adminPreset);
+        render();
+        return;
+      }
+
       const saleCategory = event.target.closest("[data-sale-category]");
       if (saleCategory) {
         activeVentaCategoria = saleCategory.dataset.saleCategory;
@@ -4045,6 +4176,14 @@
     root.addEventListener("change", (event) => {
       const target = event.target;
       const field = target.dataset.field;
+
+      if (target.dataset.adminRange) {
+        adminPeriodo = "personalizado";
+        if (target.dataset.adminRange === "desde") adminFechaDesde = target.value || state.fecha;
+        if (target.dataset.adminRange === "hasta") adminFechaHasta = target.value || state.fecha;
+        render();
+        return;
+      }
 
       if (target.dataset.backupInput !== undefined) {
         importBackupFile(target.files?.[0]);
