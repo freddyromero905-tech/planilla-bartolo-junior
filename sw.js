@@ -1,8 +1,9 @@
-const CACHE_NAME = "planilla-bartolo-v7";
+const CACHE_NAME = "planilla-bartolo-v8";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
+  "./manifest-planilla.webmanifest",
   "./icon.svg"
 ];
 
