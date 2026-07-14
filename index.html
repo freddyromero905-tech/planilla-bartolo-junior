@@ -42,7 +42,8 @@
 
     button,
     input,
-    select {
+    select,
+    textarea {
       font: inherit;
     }
 
@@ -130,7 +131,8 @@
     }
 
     input,
-    select {
+    select,
+    textarea {
       width: 100%;
       min-height: 38px;
       border: 1px solid #cdd3db;
@@ -142,9 +144,16 @@
 
     input:focus,
     select:focus,
+    textarea:focus,
     button:focus {
       outline: 2px solid rgba(29, 78, 216, 0.32);
       outline-offset: 2px;
+    }
+
+    textarea {
+      min-height: 72px;
+      resize: vertical;
+      line-height: 1.35;
     }
 
     .tabs {
@@ -853,7 +862,7 @@
       "SMIRNOF LATA"
     ];
 
-    const productos = [
+    const productosBase = [
       ["SÁNDWICHES", "Sandwich Tradicional", 26000],
       ["SÁNDWICHES", "Sandwich Doble Carne", 42000],
       ["SÁNDWICHES", "Sandwich Mixto", 35000],
@@ -936,7 +945,9 @@
       precioPY: precio
     }));
 
-    const ventaCategorias = [...new Set(productos.map((producto) => producto.categoria))];
+    const productosBaseById = new Map(productosBase.map((producto) => [producto.id, producto]));
+    let productos = productosBase.slice();
+    let ventaCategorias = [...new Set(productos.map((producto) => producto.categoria))];
     const ventaCategoriaLibres = "__LIBRES__";
     const ventaCategoriaConsumos = "__CONSUMOS__";
 
@@ -1072,8 +1083,119 @@
       }
     };
 
+    function recipeTextFromObject(recipe) {
+      return Object.entries(recipe || {})
+        .map(([insumo, cantidad]) => `${insumo} = ${cantidad}`)
+        .join("\n");
+    }
+
+    function recipeObjectFromText(text) {
+      const recipe = {};
+      String(text || "")
+        .split(/\r?\n/)
+        .forEach((line) => {
+          const clean = line.trim();
+          if (!clean) return;
+          const parts = clean.split(/[:=]/);
+          let insumo = "";
+          let cantidad = 0;
+          if (parts.length > 1) {
+            insumo = parts.shift().trim();
+            cantidad = Number(parts.join(":").trim().replace(",", "."));
+          } else {
+            const startQty = clean.match(/^(\d+(?:[.,]\d+)?)\s*x?\s+(.+)$/i);
+            const endQty = clean.match(/^(.+?)\s+x?\s*(\d+(?:[.,]\d+)?)$/i);
+            if (startQty) {
+              cantidad = Number(startQty[1].replace(",", "."));
+              insumo = startQty[2].trim();
+            } else if (endQty) {
+              insumo = endQty[1].trim();
+              cantidad = Number(endQty[2].replace(",", "."));
+            } else {
+              insumo = clean;
+              cantidad = 1;
+            }
+          }
+          if (!insumo || !Number.isFinite(cantidad) || cantidad <= 0) return;
+          recipe[insumo] = Number(recipe[insumo] || 0) + cantidad;
+        });
+      return recipe;
+    }
+
+    function recipeTextForProduct(producto) {
+      if (!producto) return "";
+      if (producto.recetaTexto) return String(producto.recetaTexto);
+      if (recetasManualArmado[producto.nombre]) return recipeTextFromObject(recetasManualArmado[producto.nombre]);
+      if (producto.categoria === "BEBIDA" && stockBebidas.includes(producto.nombre)) {
+        return recipeTextFromObject({ [producto.nombre]: 1 });
+      }
+      return "";
+    }
+
+    function normalizeProductCategory(value) {
+      const clean = String(value || "").trim();
+      return clean ? clean.toUpperCase() : "OTROS";
+    }
+
+    function normalizeProductCatalogRow(row, index, base = {}) {
+      const id = String(row?.id || base.id || `N${index + 1}`);
+      const categoria = normalizeProductCategory(row?.categoria ?? base.categoria ?? "OTROS");
+      const nombre = String(row?.nombre ?? base.nombre ?? `Producto ${index + 1}`).trim() || `Producto ${index + 1}`;
+      const precio = Number(row?.precio ?? base.precio ?? 0);
+      const precioPY = Number(row?.precioPY ?? row?.precio ?? base.precioPY ?? base.precio ?? 0);
+      const recetaTexto = String(row?.recetaTexto ?? base.recetaTexto ?? recipeTextForProduct({ ...base, ...row, categoria, nombre })).trim();
+      return {
+        id,
+        categoria,
+        nombre,
+        precio: Number.isFinite(precio) ? precio : 0,
+        precioPY: Number.isFinite(precioPY) ? precioPY : Number.isFinite(precio) ? precio : 0,
+        activo: row?.activo !== false,
+        recetaTexto
+      };
+    }
+
+    function defaultProductoCatalogo() {
+      return productosBase.map((producto, index) => normalizeProductCatalogRow({
+        ...producto,
+        activo: true,
+        recetaTexto: recipeTextForProduct(producto)
+      }, index, producto));
+    }
+
+    function syncProductoCatalogo(savedCatalog) {
+      const rows = Array.isArray(savedCatalog) ? savedCatalog : [];
+      const byId = new Map(rows.map((row) => [String(row?.id || ""), row]));
+      const baseRows = productosBase.map((base, index) => {
+        const saved = byId.get(base.id) || {};
+        return normalizeProductCatalogRow({ ...base, ...saved, id: base.id }, index, base);
+      });
+      const customRows = rows
+        .filter((row) => row?.id && !productosBaseById.has(String(row.id)))
+        .map((row, index) => normalizeProductCatalogRow(row, productosBase.length + index));
+      const seen = new Set();
+      return [...baseRows, ...customRows].filter((producto) => {
+        if (seen.has(producto.id)) return false;
+        seen.add(producto.id);
+        return true;
+      });
+    }
+
+    function applyProductoCatalogo(catalogo) {
+      productos = syncProductoCatalogo(catalogo);
+      ventaCategorias = [...new Set(productos.filter((producto) => producto.activo !== false).map((producto) => producto.categoria))];
+      if (!ventaCategorias.length) {
+        ventaCategorias = [...new Set(productos.map((producto) => producto.categoria))];
+      }
+      if (!ventaCategorias.includes(activeVentaCategoria)) {
+        activeVentaCategoria = ventaCategorias[0] || "";
+      }
+    }
+
     function recetaProducto(producto) {
       if (!producto) return {};
+      const editableRecipe = recipeObjectFromText(producto.recetaTexto);
+      if (Object.keys(editableRecipe).length) return editableRecipe;
       if (recetasManualArmado[producto.nombre]) return recetasManualArmado[producto.nombre];
       if (producto.categoria === "BEBIDA" && stockBebidas.includes(producto.nombre)) {
         return { [producto.nombre]: 1 };
@@ -1109,6 +1231,7 @@
     let adminFechaDesde = "";
     let adminFechaHasta = "";
     let adminPeriodo = "dia";
+    let activeAdminProductCategory = "";
 
     const tabDescriptions = {
       hoja1: "Inventario y conteo por producto.",
@@ -1243,6 +1366,7 @@
       qr: 443000,
       totalPYManual: 0,
       comisionPY: 0,
+      productosCatalogo: defaultProductoCatalogo(),
       egresos: [
         { concepto: "HIELO / GAS", nombre: "", monto: 0 },
         { concepto: "GASTOS EXTRAORDINARIOS", nombre: "", monto: 0 },
@@ -1361,6 +1485,8 @@
     function normalizeState(next) {
       const defaults = defaultState();
       next.local = normalizeLocalName(next.local);
+      next.productosCatalogo = syncProductoCatalogo(next.productosCatalogo || defaults.productosCatalogo);
+      applyProductoCatalogo(next.productosCatalogo);
       const savedExtras = next.extras;
       next.carnes = syncStockRows(next.carnes, stockCarnesPanes);
       next.extras = syncStockRows(next.extras, stockExtras);
@@ -1443,9 +1569,10 @@
 
     function syncVentas(savedVentas) {
       const rows = Array.isArray(savedVentas) ? savedVentas : [];
+      const byProduct = new Map(rows.map((row) => [String(row?.productoId || ""), row]));
       return productos.map((producto, index) => ({
         productoId: producto.id,
-        cantidad: Number(rows[index]?.cantidad || 0)
+        cantidad: Number(byProduct.get(producto.id)?.cantidad ?? rows[index]?.cantidad ?? 0)
       }));
     }
 
@@ -1635,7 +1762,7 @@
       queueCloudRecord({
         key: "config::security",
         type: "config",
-        data: { seguridad: state.seguridad }
+        data: { seguridad: state.seguridad, productosCatalogo: state.productosCatalogo }
       });
       queueCloudDay(state.local, state.fecha);
       const report = state.reportesPorFecha?.[reportKey(state.local, state.fecha)];
@@ -1647,7 +1774,7 @@
       queueCloudRecord({
         key: "config::security",
         type: "config",
-        data: { seguridad: state.seguridad }
+        data: { seguridad: state.seguridad, productosCatalogo: state.productosCatalogo }
       });
       Object.entries(state.sucursalDias || {}).forEach(([key, dayData]) => {
         const [local, ...dateParts] = key.split("__");
@@ -1710,6 +1837,10 @@
               }
             };
           }
+          if (record.type === "config" && data.productosCatalogo) {
+            state.productosCatalogo = syncProductoCatalogo(data.productosCatalogo);
+            applyProductoCatalogo(state.productosCatalogo);
+          }
           if (record.type === "day" && data.local && data.fecha && data.dayData) {
             state.sucursalDias[dayKey(normalizeLocalName(data.local), data.fecha)] = data.dayData;
           }
@@ -1744,6 +1875,18 @@
 
     function productById(id) {
       return productos.find((producto) => producto.id === id) || productos[0];
+    }
+
+    function refreshProductDependentState() {
+      state.productosCatalogo = syncProductoCatalogo(state.productosCatalogo);
+      applyProductoCatalogo(state.productosCatalogo);
+      state.ventas = syncVentas(state.ventas);
+      state.consumosInternos = syncConsumosInternos(state.consumosInternos);
+      state.pedidosYa = Array.isArray(state.pedidosYa) ? state.pedidosYa : [];
+    }
+
+    function nextCustomProductId() {
+      return `N${Date.now().toString(36)}${Math.floor(Math.random() * 1000).toString(36)}`;
     }
 
     function escapeHtml(value) {
@@ -1815,9 +1958,11 @@
 
     function productOptions(selectedId) {
       return productos
+        .filter((producto) => producto.activo !== false || producto.id === selectedId)
         .map((producto) => {
           const selected = producto.id === selectedId ? "selected" : "";
-          return `<option value="${producto.id}" ${selected}>${escapeHtml(producto.nombre)}</option>`;
+          const inactive = producto.activo === false ? " (inactivo)" : "";
+          return `<option value="${producto.id}" ${selected}>${escapeHtml(producto.nombre)}${inactive}</option>`;
         })
         .join("");
     }
@@ -2174,6 +2319,7 @@
     function ventaCategoriaTotal(categoria) {
       return productos.reduce((acc, producto, index) => {
         if (producto.categoria !== categoria) return acc;
+        if (producto.activo === false && !Number(state.ventas[index]?.cantidad || 0)) return acc;
         return acc + producto.precio * Number(state.ventas[index]?.cantidad || 0);
       }, 0);
     }
@@ -2233,7 +2379,10 @@
       }
       const productosVisibles = productos
         .map((producto, index) => ({ producto, index }))
-        .filter(({ producto }) => producto.categoria === activeVentaCategoria);
+        .filter(({ producto, index }) => {
+          if (producto.categoria !== activeVentaCategoria) return false;
+          return producto.activo !== false || Number(state.ventas[index]?.cantidad || 0);
+        });
       const totalCategoria = ventaCategoriaTotal(activeVentaCategoria);
       return `
         <section class="panel">
@@ -2646,6 +2795,7 @@
           </div>
         </section>
         ${renderSeguridadAdmin()}
+        ${renderProductosAdmin()}
         <section class="panel">
           <div class="panel-body">
             ${renderTitle("Efectivo a entregar Bartolo", `Sumatoria de todas las sucursales para el periodo ${periodLabel}.`)}
@@ -2822,6 +2972,96 @@
                 </thead>
                 <tbody>${rows}</tbody>
               </table>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderProductosAdmin() {
+      const catalogo = syncProductoCatalogo(state.productosCatalogo);
+      const categorias = [...new Set(catalogo.map((producto) => producto.categoria))].sort();
+      const activeCategory = categorias.includes(activeAdminProductCategory) ? activeAdminProductCategory : "TODOS";
+      if (activeAdminProductCategory && !categorias.includes(activeAdminProductCategory)) {
+        activeAdminProductCategory = "";
+      }
+      const visibles = catalogo
+        .map((producto, index) => ({ producto, index }))
+        .filter(({ producto }) => activeCategory === "TODOS" || producto.categoria === activeCategory);
+      const activos = catalogo.filter((producto) => producto.activo !== false).length;
+      const action = `<button class="btn" data-action="add-product" type="button">Agregar producto</button>`;
+      return `
+        <section class="panel">
+          <div class="panel-body">
+            ${renderTitle("Productos, precios y recetas", "CEO puede agregar productos, modificar precios y ajustar receta de descuento de inventario.", action)}
+            <div class="inline-grid">
+              <label>
+                <span>Categoria</span>
+                <input data-new-product-category value="${escapeHtml(activeCategory === "TODOS" ? "" : activeCategory)}" placeholder="Ej: PIZZAS / BEBIDA / PROMOS" />
+              </label>
+              <label>
+                <span>Producto nuevo</span>
+                <input data-new-product-name placeholder="Nombre del producto" />
+              </label>
+              <label>
+                <span>Precio</span>
+                <input type="number" data-new-product-price placeholder="0" />
+              </label>
+              <label class="span-2">
+                <span>Receta para inventario, una linea por insumo</span>
+                <textarea data-new-product-recipe placeholder="PAN HAMBURGUESA = 1&#10;HAMBURGUESA (Medallon 80g) = 1"></textarea>
+              </label>
+              <div class="notice amber">
+                Activos: ${activos} / ${catalogo.length}. Si ocultas un producto no se borra la historia; solo deja de aparecer para nuevas cargas.
+              </div>
+            </div>
+            <div class="category-picker">
+              <button class="category-chip ${activeCategory === "TODOS" ? "active" : ""}" data-admin-product-category="TODOS" type="button">
+                TODOS
+                <span>${catalogo.length} productos</span>
+              </button>
+              ${categorias.map((categoria) => {
+                const count = catalogo.filter((producto) => producto.categoria === categoria).length;
+                const active = categoria === activeCategory ? "active" : "";
+                return `
+                  <button class="category-chip ${active}" data-admin-product-category="${escapeHtml(categoria)}" type="button">
+                    ${escapeHtml(categoria)}
+                    <span>${count} productos</span>
+                  </button>
+                `;
+              }).join("")}
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Estado</th>
+                    <th>Categoria</th>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Receta inventario</th>
+                    <th>Tipo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${visibles.map(({ producto, index }) => {
+                    const tipo = productosBaseById.has(producto.id) ? "Base" : "Nuevo";
+                    return `
+                      <tr>
+                        <td data-label="Estado"><input type="checkbox" data-product-index="${index}" data-product-field="activo" ${producto.activo !== false ? "checked" : ""} /></td>
+                        <td data-label="Categoria"><input data-product-index="${index}" data-product-field="categoria" value="${escapeHtml(producto.categoria)}" /></td>
+                        <td data-label="Producto"><input data-product-index="${index}" data-product-field="nombre" value="${escapeHtml(producto.nombre)}" /></td>
+                        <td data-label="Precio"><input type="number" data-product-index="${index}" data-product-field="precio" value="${Number(producto.precio || 0)}" /></td>
+                        <td data-label="Receta inventario"><textarea data-product-index="${index}" data-product-field="recetaTexto" placeholder="INSUMO = cantidad">${escapeHtml(producto.recetaTexto || "")}</textarea></td>
+                        <td data-label="Tipo"><strong>${tipo}</strong></td>
+                      </tr>
+                    `;
+                  }).join("")}
+                </tbody>
+              </table>
+            </div>
+            <div class="notice green" style="margin-top: 14px;">
+              La receta descuenta inventario cuando el producto aparece en Hoja 2, Pedidos Ya o cenas/cortesias. Usa nombres de insumos iguales a Hoja 1 para que el descuento sea exacto.
             </div>
           </div>
         </section>
@@ -4122,6 +4362,39 @@
         return;
       }
 
+      const adminProductCategory = event.target.closest("[data-admin-product-category]");
+      if (adminProductCategory) {
+        activeAdminProductCategory = adminProductCategory.dataset.adminProductCategory === "TODOS" ? "" : adminProductCategory.dataset.adminProductCategory;
+        render();
+        return;
+      }
+
+      const addProduct = event.target.closest("[data-action='add-product']");
+      if (addProduct) {
+        const categoria = normalizeProductCategory(root.querySelector("[data-new-product-category]")?.value || activeAdminProductCategory || "OTROS");
+        const nombre = String(root.querySelector("[data-new-product-name]")?.value || "").trim();
+        const precio = toNumber(root.querySelector("[data-new-product-price]")?.value || 0);
+        const recetaTexto = String(root.querySelector("[data-new-product-recipe]")?.value || "").trim();
+        if (!nombre) {
+          alert("Cargar nombre del producto.");
+          return;
+        }
+        state.productosCatalogo.push(normalizeProductCatalogRow({
+          id: nextCustomProductId(),
+          categoria,
+          nombre,
+          precio,
+          precioPY: precio,
+          activo: true,
+          recetaTexto
+        }, state.productosCatalogo.length));
+        activeAdminProductCategory = categoria;
+        refreshProductDependentState();
+        saveState();
+        render();
+        return;
+      }
+
       const addPy = event.target.closest("[data-action='add-py']");
       if (addPy) {
         state.pedidosYa.push({
@@ -4213,6 +4486,28 @@
           state.seguridad.sucursales[local][securityField] = target.type === "checkbox" ? target.checked : target.value;
           saveState();
         }
+        return;
+      }
+
+      if (target.dataset.productIndex !== undefined && target.dataset.productField) {
+        const index = Number(target.dataset.productIndex);
+        const productField = target.dataset.productField;
+        const row = state.productosCatalogo[index];
+        if (!row) return;
+        if (productField === "activo") {
+          row.activo = target.checked;
+        } else if (productField === "precio" || productField === "precioPY") {
+          row[productField] = toNumber(target.value);
+          if (productField === "precio") row.precioPY = row.precio;
+        } else if (productField === "categoria") {
+          row.categoria = normalizeProductCategory(target.value);
+          activeAdminProductCategory = row.categoria;
+        } else {
+          row[productField] = target.value;
+        }
+        refreshProductDependentState();
+        saveState();
+        render();
         return;
       }
 
